@@ -1,8 +1,7 @@
 {
   "name": "solidity-struct-lite",
   "version": "1.0.0",
-  "description":
-    "A solidity tool that allows the creation of gas efficient Structures.",
+  "description": "A solidity tool that allows the creation of gas efficient Structures.",
   "main": "index.js",
   "author": "Klaus Hott Vidal <klahott@gmail.com>",
   "license": "MIT",
@@ -13,6 +12,7 @@
     "bignumber.js": "^6.0.0",
     "ganache-cli": "^6.1.0",
     "lodash": "^4.17.5",
+    "mustache": "^2.3.0",
     "solidity-parser": "^0.4.0",
     "truffle": "^4.1.3"
   },

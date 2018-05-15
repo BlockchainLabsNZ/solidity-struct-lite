@@ -1,0 +1,3 @@
+function get{{ struct }}{{ name }}() public view returns({{ type }}) {
+    return uint256({{ liteStruct1[0] }}) & {{ struct }}_{{ name }}_MASK != 0;
+}

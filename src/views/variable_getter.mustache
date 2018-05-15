@@ -1,0 +1,3 @@
+function get{{ struct }}{{ name }}() public view returns({{ type }}) {
+    return {{type}}((uint256({{ struct }}Data[{{ index }}]) & {{ struct }}_{{ name }}_MASK) / {{ struct }}_{{ name }}_OFFSET);
+}
