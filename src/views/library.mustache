@@ -2,4 +2,13 @@ pragma solidity 0.4.21;
 
 
 library {{ name }} {
+    function get{{ name }}() public view returns(
+        {{#each body}}
+        {{ literal.literal }} {{ name }}{{#unless @last}},{{/unless}}
+        {{/each}}
+    ) {
+        {{#each body}}
+        {{ name }} = get{{ ../name }}{{ name }}();
+        {{/each}}
+    }
 }
