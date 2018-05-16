@@ -25,7 +25,6 @@ contract StructLitePOC {
     TestStruct1 public testStruct1;
 
     // store1 1 byte (boolean)
-    uint256 private constant OFFSET01 = 0x0000000000000000000000000000000000000000000000000000000000000001;
     uint256 private constant MASK01 = 0x00000000000000000000000000000000000000000000000000000000000000FF;
     uint256 private constant NEGATIVE_MASK01 = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00;
     // store1 20 bytes (address)
@@ -49,7 +48,6 @@ contract StructLitePOC {
     uint256 private constant MASK06 = 0x00FFFFFFFF000000000000000000000000000000000000000000000000000000;
     uint256 private constant NEGATIVE_MASK06 = 0xFF00000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF;
     // store1 5 bytes (bytes5)
-    uint256 private constant OFFSET07 = 0x0000000000000000000000000000000000000000000000000000000000000001;
     uint256 private constant MASK07 = 0x000000000000000000000000000000000000000000000000000000FFFFFFFFFF;
     uint256 private constant NEGATIVE_MASK07 = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000000000;
     // store1 6 bytes (bytes6)
@@ -65,7 +63,6 @@ contract StructLitePOC {
     uint256 private constant MASK10 = 0x000000000000FFFFFFFFFFFFFFFF000000000000000000000000000000000000;
     uint256 private constant NEGATIVE_MASK10 = 0xFFFFFFFFFFFF0000000000000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF;
     // store1 9 bytes (bytes9)
-    uint256 private constant OFFSET11 = 0x0000000000000000000000000000000000000000000000000000000000000001;
     uint256 private constant MASK11 = 0x0000000000000000000000000000000000000000000000FFFFFFFFFFFFFFFFFF;
     uint256 private constant NEGATIVE_MASK11 = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF000000000000000000;
     // store1 10 bytes (bytes10)
@@ -77,7 +74,6 @@ contract StructLitePOC {
     uint256 private constant MASK13 = 0x0000FFFFFFFFFFFFFFFFFFFFFF00000000000000000000000000000000000000;
     uint256 private constant NEGATIVE_MASK13 = 0xFFFF0000000000000000000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF;
     // store1 12 bytes (bytes12)
-    uint256 private constant OFFSET14 = 0x0000000000000000000000000000000000000000000000000000000000000001;
     uint256 private constant MASK14 = 0x0000000000000000000000000000000000000000FFFFFFFFFFFFFFFFFFFFFFFF;
     uint256 private constant NEGATIVE_MASK14 = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF000000000000000000000000;
 
@@ -110,7 +106,7 @@ contract StructLitePOC {
                 NEGATIVE_MASK05 |
                 NEGATIVE_MASK06
             )) |
-            (uint256(0xFF) * OFFSET01) & MASK01 |
+            (uint256(0xFF) & MASK01) |
             (uint256(address(0xF)) * OFFSET02) & MASK02 |
             (uint256(bytes1(1)) * OFFSET03) & MASK03 |
             (uint256(bytes2(2)) * OFFSET04) & MASK04 |
@@ -124,7 +120,7 @@ contract StructLitePOC {
                 NEGATIVE_MASK09 |
                 NEGATIVE_MASK10
             )) |
-            (uint256(bytes5(5)) * OFFSET07) & MASK07 |
+            (uint256(bytes5(5)) & MASK07) |
             (uint256(bytes6(6)) * OFFSET08) & MASK08 |
             (uint256(bytes7(7)) * OFFSET09) & MASK09 |
             (uint256(bytes8(8)) * OFFSET10) & MASK10
@@ -135,13 +131,13 @@ contract StructLitePOC {
                 NEGATIVE_MASK12 |
                 NEGATIVE_MASK13
             )) |
-            (uint256(bytes9(9)) * OFFSET11) & MASK11 |
+            (uint256(bytes9(9)) & MASK11) |
             (uint256(bytes10(10)) * OFFSET12) & MASK12 |
             (uint256(bytes11(11)) * OFFSET13) & MASK13
         );
         liteStruct1[3] = bytes32(
             (uint256(liteStruct1[3]) & NEGATIVE_MASK14) |
-            (uint256(bytes12(12)) * OFFSET14) & MASK14
+            (uint256(bytes12(12)) & MASK14)
         );
     }
 
@@ -165,7 +161,7 @@ contract StructLitePOC {
     function setTestStruct1Bool(bool _bool) public {
         if (_bool) {
             liteStruct1[0] = bytes32(
-                (uint256(liteStruct1[0]) & NEGATIVE_MASK01) | OFFSET01
+                (uint256(liteStruct1[0]) & NEGATIVE_MASK01) | MASK01
             );
         } else {
             liteStruct1[0] = bytes32(uint256(liteStruct1[0]) & NEGATIVE_MASK01);
@@ -204,7 +200,7 @@ contract StructLitePOC {
 
     function setTestStruct1Bytes5(bytes5 _bytes5) public {
         liteStruct1[1] = bytes32(
-            (uint256(liteStruct1[1]) & NEGATIVE_MASK07) | ((uint256(_bytes5) * OFFSET07) & MASK07)
+            (uint256(liteStruct1[1]) & NEGATIVE_MASK07) | (uint256(_bytes5) & MASK07)
         );
     }
 
@@ -228,7 +224,7 @@ contract StructLitePOC {
 
     function setTestStruct1Bytes9(bytes9 _bytes9) public {
         liteStruct1[2] = bytes32(
-            (uint256(liteStruct1[2]) & NEGATIVE_MASK11) | ((uint256(_bytes9) * OFFSET11) & MASK11)
+            (uint256(liteStruct1[2]) & NEGATIVE_MASK11) | (uint256(_bytes9) & MASK11)
         );
     }
 
@@ -246,12 +242,12 @@ contract StructLitePOC {
 
     function setTestStruct1Bytes12(bytes12 _bytes12) public {
         liteStruct1[3] = bytes32(
-            (uint256(liteStruct1[3]) & NEGATIVE_MASK14) | ((uint256(_bytes12) * OFFSET14) & MASK14)
+            (uint256(liteStruct1[3]) & NEGATIVE_MASK14) | (uint256(_bytes12) & MASK14)
         );
     }
 
     function getTestStruct1Bool() public view returns(bool _bool) {
-        _bool = (uint256(liteStruct1[0]) & MASK01) / OFFSET01 != 0x0;
+        _bool = (uint256(liteStruct1[0]) & MASK01) != 0x0;
     }
 
     function getTestStruct1Address() public view returns(address _address) {
@@ -275,7 +271,7 @@ contract StructLitePOC {
     }
 
     function getTestStruct1Bytes5() public view returns(bytes5 _bytes5) {
-        _bytes5 = bytes5((uint256(liteStruct1[1]) & MASK07) / OFFSET07);
+        _bytes5 = bytes5(uint256(liteStruct1[1]) & MASK07);
     }
 
     function getTestStruct1Bytes6() public view returns(bytes6 _bytes6) {
@@ -291,7 +287,7 @@ contract StructLitePOC {
     }
 
     function getTestStruct1Bytes9() public view returns(bytes9 _bytes9) {
-        _bytes9 = bytes9((uint256(liteStruct1[2]) & MASK11) / OFFSET11);
+        _bytes9 = bytes9(uint256(liteStruct1[2]) & MASK11);
     }
 
     function getTestStruct1Bytes10() public view returns(bytes10 _bytes10) {
@@ -303,7 +299,7 @@ contract StructLitePOC {
     }
 
     function getTestStruct1Bytes12() public view returns(bytes12 _bytes12) {
-        _bytes12 = bytes12((uint256(liteStruct1[3]) & MASK14) / OFFSET14);
+        _bytes12 = bytes12(uint256(liteStruct1[3]) & MASK14);
     }
 
     function getStruct1Bool() public view returns(bool _bool) {
