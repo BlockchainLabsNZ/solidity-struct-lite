@@ -112,9 +112,9 @@ const parseStruct = function(struct) {
   };
 };
 
-// const tree = SolidityParser.parseFile("./contracts/StructLitePOC.sol");
-// const structs = fetchStructs(tree);
-const structs = require("./test/StructLitePOC.js");
+const tree = SolidityParser.parseFile(process.argv[2]);
+const structs = fetchStructs(tree);
+// const structs = require("./test/StructLitePOC.js");
 
 var library = Handlebars.compile(
   fs.readFileSync("./src/views/library.mustache").toString()
