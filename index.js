@@ -4,7 +4,7 @@ const Mustache = require("mustache");
 const Handlebars = require("handlebars");
 const BigNumber = require("bignumber.js");
 const _ = require("lodash");
-const byte_length = require("./src/constants.js");
+const constants = require("./src/constants.js");
 const structs = require("./test/StructLitePOC.js");
 
 const fetchStructs = function(statement) {
@@ -54,25 +54,36 @@ var bool_setter = Handlebars.compile(
   fs.readFileSync("./src/views/bool_setter.mustache").toString()
 );
 
+const parseStruct = function(struct) {
+  let variables = struct.body.map(function(variable) {
+    return {
+      name: variable.name,
+      type: variable.literal.literal,
+      byte_length: constants.byte_length[variable.literal.literal],
+      slot: 0,
+      offset: "",
+      mask: "",
+      negative_mask: "",
+      isBool: variable.literal.literal == "bool",
+      isFirst: false
+    };
+  });
+  let slots = [];
+
+  return {
+    name: struct.name,
+    variables: variables,
+    slots: slots
+  };
+};
+
 structs.forEach(struct => {
+  struct = parseStruct(struct);
   let output = library(struct);
 
   console.log(output);
 
-  struct.body.forEach(obj => {
+  struct.variables.forEach(obj => {
     console.log(`${JSON.stringify(obj)}`);
   });
 });
-
-let variable_data = {
-  struct: "",
-  index: 0,
-  type: "",
-  byte_length: 0,
-  name: "",
-  offset: "",
-  mask: "",
-  negative_mask: ""
-};
-
-console.log(JSON.stringify(structs));

@@ -2,12 +2,60 @@ pragma solidity 0.4.21;
 
 
 library {{ name }} {
+    ////
+    // Variable Declarations
+    ////
+    {{#each variables}}
+    // As a {{ type }}, {{ name }} will use {{ byte_length }} bytes.
+    uint256 public constant {{ ../name }}_{{ name }}_OFFSET = {{ offset }};
+    uint256 public constant {{ ../name }}_{{ name }}_MASK = {{ mask }};
+    uint256 public constant {{ ../name }}_{{ name }}_NEGATIVE_MASK = {{ negative_mask }};
+
+    {{/each}}
+
+    ////
+    // Setters
+    ////
+    {{#each variables}}
+    function set{{ ../name }}{{ name }}({{ type }} _{{ name }}) public {
+    {{#if isBool}}
+        if (_{{ name }}) {
+            {{ ../name }}Data[{{ index }}] = bytes32(
+                (uint256({{ ../name }}Data[{{ index }}]) & {{ ../name }}_{{ name }}_NEGATIVE_MASK) | {{ ../name }}_{{ name }}_MASK
+            );
+        } else {
+            {{ ../name }}Data[{{ index }}] = bytes32(uint256({{ ../name }}Data[{{ index }}]) & {{ ../name }}_{{ name }}_NEGATIVE_MASK);
+        }
+    {{else}}
+        {{ ../name }}Data[{{ index }}] = bytes32(
+            (uint256({{ ../name }}Data[{{ index }}]) & {{ ../name }}_{{ name }}_NEGATIVE_MASK) |
+            ((uint256(_{{ name }}){{#unless isFirst}} * {{ ../name }}_{{ name }}_OFFSET{{/unless}}) & {{ ../name }}_{{ name }}_MASK)
+        );
+    {{/if}}
+    }
+
+    {{/each}}
+
+    ////
+    // Getters
+    ////
+    {{#each variables}}
+    function get{{ ../name }}{{ name }}() public view returns({{ type }}) {
+        {{#if isBool}}
+        return (uint256({{ ../name }}Data[{{ index }}]) & {{ ../name }}_{{ name }}_MASK) != 0x0;
+        {{else}}
+        return {{type}}((uint256({{ ../name }}Data[{{ index }}]) & {{ ../name }}_{{ name }}_MASK){{#unless isFirst}} / {{ ../name }}_{{ name }}_OFFSET{{/unless}});
+        {{/if}}
+    }
+
+    {{/each}}
+
     function get{{ name }}() public view returns(
-        {{#each body}}
-        {{ literal.literal }} {{ name }}{{#unless @last}},{{/unless}}
+        {{#each variables}}
+        {{ type }} {{ name }}{{#unless @last}},{{/unless}}
         {{/each}}
     ) {
-        {{#each body}}
+        {{#each variables}}
         {{ name }} = get{{ ../name }}{{ name }}();
         {{/each}}
     }
