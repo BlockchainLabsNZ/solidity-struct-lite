@@ -1,17 +1,21 @@
-pragma solidity 0.4.21;
+pragma solidity 0.4.24;
 
 
-library {{ name }} {
+contract {{ name }} {
     ////
     // Variable Declarations
     ////
     {{#each variables}}
     // As a {{ type }}, {{ name }} will use {{ byte_length }} bytes.
-    uint256 public constant {{ ../name }}_{{ name }}_OFFSET = {{ offset }};
-    uint256 public constant {{ ../name }}_{{ name }}_MASK = {{ mask }};
-    uint256 public constant {{ ../name }}_{{ name }}_NEGATIVE_MASK = {{ negative_mask }};
+    {{#unless isFirst}}
+    uint256 private constant {{ ../name }}_{{ name }}_OFFSET = {{ offset }};
+    {{/unless}}
+    uint256 private constant {{ ../name }}_{{ name }}_MASK = {{ mask }};
+    uint256 private constant {{ ../name }}_{{ name }}_NEGATIVE_MASK = {{ negative_mask }};
 
     {{/each}}
+    // This variable will contain all of the data.
+    bytes32[{{ slotsLength }}] public {{name}}Data;
 
     ////
     // Setters
@@ -20,20 +24,59 @@ library {{ name }} {
     function set{{ ../name }}{{ name }}({{ type }} _{{ name }}) public {
     {{#if isBool}}
         if (_{{ name }}) {
-            {{ ../name }}Data[{{ index }}] = bytes32(
-                (uint256({{ ../name }}Data[{{ index }}]) & {{ ../name }}_{{ name }}_NEGATIVE_MASK) | {{ ../name }}_{{ name }}_MASK
+            {{ ../name }}Data[{{ slot }}] = bytes32(
+                (uint256({{ ../name }}Data[{{ slot }}]) & {{ ../name }}_{{ name }}_NEGATIVE_MASK) | {{ ../name }}_{{ name }}_MASK
             );
         } else {
-            {{ ../name }}Data[{{ index }}] = bytes32(uint256({{ ../name }}Data[{{ index }}]) & {{ ../name }}_{{ name }}_NEGATIVE_MASK);
+            {{ ../name }}Data[{{ slot }}] = bytes32(uint256({{ ../name }}Data[{{ slot }}]) & {{ ../name }}_{{ name }}_NEGATIVE_MASK);
         }
     {{else}}
-        {{ ../name }}Data[{{ index }}] = bytes32(
-            (uint256({{ ../name }}Data[{{ index }}]) & {{ ../name }}_{{ name }}_NEGATIVE_MASK) |
+        {{ ../name }}Data[{{ slot }}] = bytes32(
+            (uint256({{ ../name }}Data[{{ slot }}]) & {{ ../name }}_{{ name }}_NEGATIVE_MASK) |
             ((uint256(_{{ name }}){{#unless isFirst}} * {{ ../name }}_{{ name }}_OFFSET{{/unless}}) & {{ ../name }}_{{ name }}_MASK)
         );
     {{/if}}
     }
 
+    {{/each}}
+    function set{{ name }}(
+        {{#each variables}}
+        {{ type }} _{{ name }}{{#unless @last}},{{/unless}}
+        {{/each}}
+    ) public {
+        {{#each slots}}
+        set{{ ../name }}DataSlot{{ @index }}(
+            {{#each this}}
+            _{{ name }}{{#unless @last}},{{/unless}}
+            {{/each}}
+        );
+        {{/each}}
+    }
+
+    {{#each slots}}
+    function set{{ ../name }}DataSlot{{ @index }}(
+        {{#each this}}
+        {{ type }} _{{ name }}{{#unless @last}},{{/unless}}
+        {{/each}}
+    ) private {
+        {{#each this}}
+        {{#if isBool}}
+        uint256 standard{{ name }} = (_{{ name }} ? {{ ../../name }}_{{ name }}_MASK : {{ ../../name }}_{{ name }}_NEGATIVE_MASK);
+        {{else}}
+        uint256 standard{{ name }} = uint256(_{{ name }});
+        {{/if}}
+        {{/each}}
+        {{ ../name }}Data[{{ @index }}] = bytes32(
+            (uint256({{ ../name }}Data[{{ @index }}]) & (
+                {{#each this}}
+                {{ ../../name }}_{{ name }}_NEGATIVE_MASK{{#unless @last}} |{{/unless}}
+                {{/each}}
+            )) |
+            {{#each this}}
+            (standard{{ name }}{{#unless isFirst}} * {{ ../../name }}_{{ name }}_OFFSET{{/unless}}) & {{ ../../name }}_{{ name }}_MASK{{#unless @last}} |{{/unless}}
+            {{/each}}
+        );
+    }
     {{/each}}
 
     ////
@@ -42,14 +85,13 @@ library {{ name }} {
     {{#each variables}}
     function get{{ ../name }}{{ name }}() public view returns({{ type }}) {
         {{#if isBool}}
-        return (uint256({{ ../name }}Data[{{ index }}]) & {{ ../name }}_{{ name }}_MASK) != 0x0;
+        return (uint256({{ ../name }}Data[{{ slot }}]) & {{ ../name }}_{{ name }}_MASK) != 0x0;
         {{else}}
-        return {{type}}((uint256({{ ../name }}Data[{{ index }}]) & {{ ../name }}_{{ name }}_MASK){{#unless isFirst}} / {{ ../name }}_{{ name }}_OFFSET{{/unless}});
+        return {{type}}((uint256({{ ../name }}Data[{{ slot }}]) & {{ ../name }}_{{ name }}_MASK){{#unless isFirst}} / {{ ../name }}_{{ name }}_OFFSET{{/unless}});
         {{/if}}
     }
 
     {{/each}}
-
     function get{{ name }}() public view returns(
         {{#each variables}}
         {{ type }} {{ name }}{{#unless @last}},{{/unless}}
