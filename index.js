@@ -65,6 +65,15 @@ const calculateNegativeMask = function(mask) {
   return ["0x", negatedMask].join("");
 };
 
+const calculateName = function(name) {
+  let sankeName = _.snakeCase(name);
+  return {
+    CONSTANT: _.toUpper(sankeName),
+    lowerCamelCase: _.camelCase(sankeName),
+    UpperCamelCase: _.upperFirst(_.camelCase(sankeName))
+  };
+};
+
 const parseStruct = function(struct) {
   let variables = struct.body.reduce(function(accumulator, variable) {
     let type = variable.literal.literal;
@@ -84,7 +93,7 @@ const parseStruct = function(struct) {
       slot++;
     }
     accumulator.push({
-      name: variable.name,
+      name: calculateName(variable.name),
       type: type,
       byte_length: byte_length,
       slot: slot,
@@ -105,7 +114,7 @@ const parseStruct = function(struct) {
   });
 
   return {
-    name: struct.name,
+    name: calculateName(struct.name),
     variables: variables,
     slots: slots,
     slotsLength: _.last(variables).slot + 1

@@ -1,79 +1,79 @@
 pragma solidity 0.4.24;
 
 
-contract {{ name }} {
+contract {{ name.UpperCamelCase }} {
     ////
     // Variable Declarations
     ////
     {{#each variables}}
-    // As a {{ type }}, {{ name }} will use {{ byte_length }} bytes.
+    // As a {{ type }}, "{{ name.lowerCamelCase }}" will use {{ byte_length }} bytes.
     {{#unless isFirst}}
-    uint256 private constant {{ ../name }}_{{ name }}_OFFSET = {{ offset }};
+    uint256 private constant {{ ../name.CONSTANT }}_{{ name.CONSTANT }}_OFFSET = {{ offset }};
     {{/unless}}
-    uint256 private constant {{ ../name }}_{{ name }}_MASK = {{ mask }};
-    uint256 private constant {{ ../name }}_{{ name }}_NEGATIVE_MASK = {{ negative_mask }};
+    uint256 private constant {{ ../name.CONSTANT }}_{{ name.CONSTANT }}_MASK = {{ mask }};
+    uint256 private constant {{ ../name.CONSTANT }}_{{ name.CONSTANT }}_NEGATIVE_MASK = {{ negative_mask }};
 
     {{/each}}
     // This variable will contain all of the data.
-    bytes32[{{ slotsLength }}] public {{name}}Data;
+    bytes32[{{ slotsLength }}] public {{name.lowerCamelCase}}Data;
 
     ////
     // Setters
     ////
     {{#each variables}}
-    function set{{ ../name }}{{ name }}({{ type }} _{{ name }}) public {
+    function set{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}({{ type }} _{{ name.lowerCamelCase }}) public {
     {{#if isBool}}
-        if (_{{ name }}) {
-            {{ ../name }}Data[{{ slot }}] = bytes32(
-                (uint256({{ ../name }}Data[{{ slot }}]) & {{ ../name }}_{{ name }}_NEGATIVE_MASK) | {{ ../name }}_{{ name }}_MASK
+        if (_{{ name.lowerCamelCase }}) {
+            {{ ../name.lowerCamelCase }}Data[{{ slot }}] = bytes32(
+                (uint256({{ ../name.lowerCamelCase }}Data[{{ slot }}]) & {{ ../name.CONSTANT }}_{{ name.CONSTANT }}_NEGATIVE_MASK) | {{ ../name.CONSTANT }}_{{ name.CONSTANT }}_MASK
             );
         } else {
-            {{ ../name }}Data[{{ slot }}] = bytes32(uint256({{ ../name }}Data[{{ slot }}]) & {{ ../name }}_{{ name }}_NEGATIVE_MASK);
+            {{ ../name.lowerCamelCase }}Data[{{ slot }}] = bytes32(uint256({{ ../name.lowerCamelCase }}Data[{{ slot }}]) & {{ ../name.CONSTANT }}_{{ name.CONSTANT }}_NEGATIVE_MASK);
         }
     {{else}}
-        {{ ../name }}Data[{{ slot }}] = bytes32(
-            (uint256({{ ../name }}Data[{{ slot }}]) & {{ ../name }}_{{ name }}_NEGATIVE_MASK) |
-            ((uint256(_{{ name }}){{#unless isFirst}} * {{ ../name }}_{{ name }}_OFFSET{{/unless}}) & {{ ../name }}_{{ name }}_MASK)
+        {{ ../name.lowerCamelCase }}Data[{{ slot }}] = bytes32(
+            (uint256({{ ../name.lowerCamelCase }}Data[{{ slot }}]) & {{ ../name.CONSTANT }}_{{ name.CONSTANT }}_NEGATIVE_MASK) |
+            ((uint256(_{{ name.lowerCamelCase }}){{#unless isFirst}} * {{ ../name.CONSTANT }}_{{ name.CONSTANT }}_OFFSET{{/unless}}) & {{ ../name.CONSTANT }}_{{ name.CONSTANT }}_MASK)
         );
     {{/if}}
     }
 
     {{/each}}
-    function set{{ name }}(
+    function set{{ name.UpperCamelCase }}(
         {{#each variables}}
-        {{ type }} _{{ name }}{{#unless @last}},{{/unless}}
+        {{ type }} _{{ name.lowerCamelCase }}{{#unless @last}},{{/unless}}
         {{/each}}
     ) public {
         {{#each slots}}
-        set{{ ../name }}DataSlot{{ @index }}(
+        set{{ ../name.UpperCamelCase }}DataSlot{{ @index }}(
             {{#each this}}
-            _{{ name }}{{#unless @last}},{{/unless}}
+            _{{ name.lowerCamelCase }}{{#unless @last}},{{/unless}}
             {{/each}}
         );
         {{/each}}
     }
 
     {{#each slots}}
-    function set{{ ../name }}DataSlot{{ @index }}(
+    function set{{ ../name.UpperCamelCase }}DataSlot{{ @index }}(
         {{#each this}}
-        {{ type }} _{{ name }}{{#unless @last}},{{/unless}}
+        {{ type }} _{{ name.lowerCamelCase }}{{#unless @last}},{{/unless}}
         {{/each}}
     ) private {
         {{#each this}}
         {{#if isBool}}
-        uint256 standard{{ name }} = (_{{ name }} ? {{ ../../name }}_{{ name }}_MASK : {{ ../../name }}_{{ name }}_NEGATIVE_MASK);
+        uint256 standard{{ name.UpperCamelCase }} = (_{{ name.lowerCamelCase }} ? {{ ../../name.CONSTANT }}_{{ name.CONSTANT }}_MASK : {{ ../../name.CONSTANT }}_{{ name.CONSTANT }}_NEGATIVE_MASK);
         {{else}}
-        uint256 standard{{ name }} = uint256(_{{ name }});
+        uint256 standard{{ name.UpperCamelCase }} = uint256(_{{ name.lowerCamelCase }});
         {{/if}}
         {{/each}}
-        {{ ../name }}Data[{{ @index }}] = bytes32(
-            (uint256({{ ../name }}Data[{{ @index }}]) & (
+        {{ ../name.lowerCamelCase }}Data[{{ @index }}] = bytes32(
+            (uint256({{ ../name.lowerCamelCase }}Data[{{ @index }}]) & (
                 {{#each this}}
-                {{ ../../name }}_{{ name }}_NEGATIVE_MASK{{#unless @last}} |{{/unless}}
+                {{ ../../name.CONSTANT }}_{{ name.CONSTANT }}_NEGATIVE_MASK{{#unless @last}} |{{/unless}}
                 {{/each}}
             )) |
             {{#each this}}
-            (standard{{ name }}{{#unless isFirst}} * {{ ../../name }}_{{ name }}_OFFSET{{/unless}}) & {{ ../../name }}_{{ name }}_MASK{{#unless @last}} |{{/unless}}
+            (standard{{ name.UpperCamelCase }}{{#unless isFirst}} * {{ ../../name.CONSTANT }}_{{ name.CONSTANT }}_OFFSET{{/unless}}) & {{ ../../name.CONSTANT }}_{{ name.CONSTANT }}_MASK{{#unless @last}} |{{/unless}}
             {{/each}}
         );
     }
@@ -83,22 +83,22 @@ contract {{ name }} {
     // Getters
     ////
     {{#each variables}}
-    function get{{ ../name }}{{ name }}() public view returns({{ type }}) {
+    function get{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}() public view returns({{ type }}) {
         {{#if isBool}}
-        return (uint256({{ ../name }}Data[{{ slot }}]) & {{ ../name }}_{{ name }}_MASK) != 0x0;
+        return (uint256({{ ../name.lowerCamelCase }}Data[{{ slot }}]) & {{ ../name.CONSTANT }}_{{ name.CONSTANT }}_MASK) != 0x0;
         {{else}}
-        return {{type}}((uint256({{ ../name }}Data[{{ slot }}]) & {{ ../name }}_{{ name }}_MASK){{#unless isFirst}} / {{ ../name }}_{{ name }}_OFFSET{{/unless}});
+        return {{type}}((uint256({{ ../name.lowerCamelCase }}Data[{{ slot }}]) & {{ ../name.CONSTANT }}_{{ name.CONSTANT }}_MASK){{#unless isFirst}} / {{ ../name.CONSTANT }}_{{ name.CONSTANT }}_OFFSET{{/unless}});
         {{/if}}
     }
 
     {{/each}}
-    function get{{ name }}() public view returns(
+    function get{{ name.UpperCamelCase }}() public view returns(
         {{#each variables}}
-        {{ type }} {{ name }}{{#unless @last}},{{/unless}}
+        {{ type }} {{ name.lowerCamelCase }}{{#unless @last}},{{/unless}}
         {{/each}}
     ) {
         {{#each variables}}
-        {{ name }} = get{{ ../name }}{{ name }}();
+        {{ name.lowerCamelCase }} = get{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}();
         {{/each}}
     }
 }
