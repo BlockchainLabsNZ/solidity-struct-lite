@@ -1,64 +1,89 @@
 pragma solidity 0.4.24;
 
 
-contract {{ name.UpperCamelCase }} {
+library {{ name.plural }}Coder {
     ////
     // Variable Declarations
     ////
     {{#each variables}}
+    {{#unless @first}}
+
+    {{/unless}}
     // As a {{ type }}, "{{ name.lowerCamelCase }}" will use {{ byte_length }} bytes.
     {{#unless isFirst}}
-    uint256 private constant {{ ../name.CONSTANT }}_{{ name.CONSTANT }}_OFFSET = {{ offset }};
+    uint256 internal constant {{ ../name.CONSTANT }}_{{ name.CONSTANT }}_OFFSET = {{ offset }};
     {{/unless}}
-    uint256 private constant {{ ../name.CONSTANT }}_{{ name.CONSTANT }}_MASK = {{ mask }};
-    uint256 private constant {{ ../name.CONSTANT }}_{{ name.CONSTANT }}_NEGATIVE_MASK = {{ negative_mask }};
-
+    uint256 internal constant {{ ../name.CONSTANT }}_{{ name.CONSTANT }}_MASK = {{ mask }};
+    uint256 internal constant {{ ../name.CONSTANT }}_{{ name.CONSTANT }}_NEGATIVE_MASK = {{ negative_mask }};
     {{/each}}
-    // This variable will contain all of the data.
-    bytes32[{{ slotsLength }}] public {{name.lowerCamelCase}}Data;
 
     ////
-    // Setters
+    // Decoders
     ////
     {{#each variables}}
-    function set{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}({{ type }} _{{ name.lowerCamelCase }}) public {
+    {{#unless @first}}
+
+    {{/unless}}
+    function decode{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}(bytes32[{{ ../slotsLength }}] _{{ ../name.lowerCamelCase }}) public pure returns({{ type }}) {
     {{#if isBool}}
+        return (uint256(_{{ ../name.lowerCamelCase }}[{{ slot }}]) & {{ ../name.CONSTANT }}_{{ name.CONSTANT }}_MASK) != 0x0;
+        {{else}}
+        return {{type}}((uint256(_{{ ../name.lowerCamelCase }}[{{ slot }}]) & {{ ../name.CONSTANT }}_{{ name.CONSTANT }}_MASK){{#unless isFirst}} / {{ ../name.CONSTANT }}_{{ name.CONSTANT }}_OFFSET{{/unless}});
+        {{/if}}
+    }
+    {{/each}}
+
+    ////
+    // Encoders
+    ////
+    {{#each variables}}
+    {{#unless @first}}
+
+    {{/unless}}
+    function encode{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}(bytes32[{{ ../slotsLength }}] _{{ ../name.lowerCamelCase }}, {{ type }} _{{ name.lowerCamelCase }}) public pure returns(bytes32[{{ ../slotsLength }}]) {
+        {{#if isBool}}
         if (_{{ name.lowerCamelCase }}) {
-            {{ ../name.lowerCamelCase }}Data[{{ slot }}] = bytes32(
-                (uint256({{ ../name.lowerCamelCase }}Data[{{ slot }}]) & {{ ../name.CONSTANT }}_{{ name.CONSTANT }}_NEGATIVE_MASK) | {{ ../name.CONSTANT }}_{{ name.CONSTANT }}_MASK
+            _{{ ../name.lowerCamelCase }}[{{ slot }}] = bytes32(
+                (uint256(_{{ ../name.lowerCamelCase }}[{{ slot }}]) & {{ ../name.CONSTANT }}_{{ name.CONSTANT }}_NEGATIVE_MASK) | {{ ../name.CONSTANT }}_{{ name.CONSTANT }}_MASK
             );
         } else {
-            {{ ../name.lowerCamelCase }}Data[{{ slot }}] = bytes32(uint256({{ ../name.lowerCamelCase }}Data[{{ slot }}]) & {{ ../name.CONSTANT }}_{{ name.CONSTANT }}_NEGATIVE_MASK);
+            _{{ ../name.lowerCamelCase }}[{{ slot }}] = bytes32(uint256(_{{ ../name.lowerCamelCase }}[{{ slot }}]) & {{ ../name.CONSTANT }}_{{ name.CONSTANT }}_NEGATIVE_MASK);
         }
-    {{else}}
-        {{ ../name.lowerCamelCase }}Data[{{ slot }}] = bytes32(
-            (uint256({{ ../name.lowerCamelCase }}Data[{{ slot }}]) & {{ ../name.CONSTANT }}_{{ name.CONSTANT }}_NEGATIVE_MASK) |
+        {{else}}
+        _{{ ../name.lowerCamelCase }}[{{ slot }}] = bytes32(
+            (uint256(_{{ ../name.lowerCamelCase }}[{{ slot }}]) & {{ ../name.CONSTANT }}_{{ name.CONSTANT }}_NEGATIVE_MASK) |
             ((uint256(_{{ name.lowerCamelCase }}){{#unless isFirst}} * {{ ../name.CONSTANT }}_{{ name.CONSTANT }}_OFFSET{{/unless}}) & {{ ../name.CONSTANT }}_{{ name.CONSTANT }}_MASK)
         );
-    {{/if}}
+        {{/if}}
+        return _{{ ../name.lowerCamelCase }};
     }
-
     {{/each}}
-    function set{{ name.UpperCamelCase }}(
+
+    function encode{{ name.UpperCamelCase }}(
         {{#each variables}}
         {{ type }} _{{ name.lowerCamelCase }}{{#unless @last}},{{/unless}}
         {{/each}}
-    ) public {
+    ) public pure returns(bytes32[{{ slotsLength }}]) {
+        bytes32[{{ slotsLength }}] memory _{{ name.lowerCamelCase }};
         {{#each slots}}
-        set{{ ../name.UpperCamelCase }}DataSlot{{ @index }}(
+        _{{ ../name.lowerCamelCase }}[{{ @index }}] = encode{{ ../name.UpperCamelCase }}DataSlot{{ @index }}(
             {{#each this}}
             _{{ name.lowerCamelCase }}{{#unless @last}},{{/unless}}
             {{/each}}
         );
         {{/each}}
+        return _{{ name.lowerCamelCase }};
     }
 
     {{#each slots}}
-    function set{{ ../name.UpperCamelCase }}DataSlot{{ @index }}(
+    {{#unless @first}}
+
+    {{/unless}}
+    function encode{{ ../name.UpperCamelCase }}DataSlot{{ @index }}(
         {{#each this}}
         {{ type }} _{{ name.lowerCamelCase }}{{#unless @last}},{{/unless}}
         {{/each}}
-    ) private {
+    ) internal pure returns(bytes32) {
         {{#each this}}
         {{#if isBool}}
         uint256 standard{{ name.UpperCamelCase }} = (_{{ name.lowerCamelCase }} ? {{ ../../name.CONSTANT }}_{{ name.CONSTANT }}_MASK : {{ ../../name.CONSTANT }}_{{ name.CONSTANT }}_NEGATIVE_MASK);
@@ -66,39 +91,66 @@ contract {{ name.UpperCamelCase }} {
         uint256 standard{{ name.UpperCamelCase }} = uint256(_{{ name.lowerCamelCase }});
         {{/if}}
         {{/each}}
-        {{ ../name.lowerCamelCase }}Data[{{ @index }}] = bytes32(
-            (uint256({{ ../name.lowerCamelCase }}Data[{{ @index }}]) & (
-                {{#each this}}
-                {{ ../../name.CONSTANT }}_{{ name.CONSTANT }}_NEGATIVE_MASK{{#unless @last}} |{{/unless}}
-                {{/each}}
-            )) |
+        return bytes32(
             {{#each this}}
-            (standard{{ name.UpperCamelCase }}{{#unless isFirst}} * {{ ../../name.CONSTANT }}_{{ name.CONSTANT }}_OFFSET{{/unless}}) & {{ ../../name.CONSTANT }}_{{ name.CONSTANT }}_MASK{{#unless @last}} |{{/unless}}
+            ((standard{{ name.UpperCamelCase }}{{#unless isFirst}} * {{ ../../name.CONSTANT }}_{{ name.CONSTANT }}_OFFSET{{/unless}}) & {{ ../../name.CONSTANT }}_{{ name.CONSTANT }}_MASK){{#unless @last}} |{{/unless}}
             {{/each}}
         );
     }
     {{/each}}
+}
+
+
+library {{ name.plural }} {
+    // This variable will contain all of the data.
+    struct {{ name.UpperCamelCase }} {
+        bytes32[{{ slotsLength }}] data;
+    }
 
     ////
     // Getters
     ////
     {{#each variables}}
-    function get{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}() public view returns({{ type }}) {
-        {{#if isBool}}
-        return (uint256({{ ../name.lowerCamelCase }}Data[{{ slot }}]) & {{ ../name.CONSTANT }}_{{ name.CONSTANT }}_MASK) != 0x0;
-        {{else}}
-        return {{type}}((uint256({{ ../name.lowerCamelCase }}Data[{{ slot }}]) & {{ ../name.CONSTANT }}_{{ name.CONSTANT }}_MASK){{#unless isFirst}} / {{ ../name.CONSTANT }}_{{ name.CONSTANT }}_OFFSET{{/unless}});
-        {{/if}}
-    }
+    {{#unless @first}}
 
+    {{/unless}}
+    function get{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}({{ ../name.UpperCamelCase }} storage _{{ ../name.lowerCamelCase }}) internal view returns({{ type }}) {
+        return {{ ../name.plural }}Coder.decode{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}(_{{ ../name.lowerCamelCase }}.data);
+    }
     {{/each}}
-    function get{{ name.UpperCamelCase }}() public view returns(
+
+    function get{{ name.UpperCamelCase }}({{ name.UpperCamelCase }} storage _{{ name.lowerCamelCase }}) internal view returns(
         {{#each variables}}
         {{ type }} {{ name.lowerCamelCase }}{{#unless @last}},{{/unless}}
         {{/each}}
     ) {
         {{#each variables}}
-        {{ name.lowerCamelCase }} = get{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}();
+        {{ name.lowerCamelCase }} = {{ ../name.plural }}Coder.decode{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}(_{{ ../name.lowerCamelCase }}.data);
         {{/each}}
+    }
+
+    ////
+    // Setters
+    ////
+    {{#each variables}}
+    {{#unless @first}}
+
+    {{/unless}}
+    function set{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}({{ ../name.UpperCamelCase }} storage _{{ ../name.lowerCamelCase }}, {{ type }} _{{ name.lowerCamelCase }}) internal {
+        _{{ ../name.lowerCamelCase }}.data = {{ ../name.plural }}Coder.encode{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}(_{{ ../name.lowerCamelCase }}.data, _{{ name.lowerCamelCase }});
+    }
+    {{/each}}
+
+    function set{{ name.UpperCamelCase }}(
+        {{ name.UpperCamelCase }} storage _{{ name.lowerCamelCase }},
+        {{#each variables}}
+        {{ type }} _{{ name.lowerCamelCase }}{{#unless @last}},{{/unless}}
+        {{/each}}
+    ) internal {
+        _{{ name.lowerCamelCase }}.data = {{ name.plural }}Coder.encode{{ name.UpperCamelCase }}(
+            {{#each variables}}
+            _{{ name.lowerCamelCase }}{{#unless @last}},{{/unless}}
+            {{/each}}
+        );
     }
 }

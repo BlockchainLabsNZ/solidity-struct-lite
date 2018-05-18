@@ -4,6 +4,7 @@ const Mustache = require("mustache");
 const Handlebars = require("handlebars");
 const BigNumber = require("bignumber.js");
 const _ = require("lodash");
+const pluralize = require("pluralize");
 const constants = require("./src/constants.js");
 
 const fetchStructs = function(statement) {
@@ -70,7 +71,8 @@ const calculateName = function(name) {
   return {
     CONSTANT: _.toUpper(sankeName),
     lowerCamelCase: _.camelCase(sankeName),
-    UpperCamelCase: _.upperFirst(_.camelCase(sankeName))
+    UpperCamelCase: _.upperFirst(_.camelCase(sankeName)),
+    plural: pluralize(_.upperFirst(_.camelCase(sankeName)))
   };
 };
 
