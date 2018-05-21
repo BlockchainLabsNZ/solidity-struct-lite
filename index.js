@@ -139,6 +139,7 @@ var StructLiteMock = Handlebars.compile(
     // .readFileSync(
     //   "./src/templates/test/scenarios/SingleStructScenario.mustache"
     // )
+    // .readFileSync("./src/templates/test/scenarios/StructArrayScenario.mustache")
     // .readFileSync("./src/templates/test/struct_lite_specs.mustache")
     .toString()
 );
