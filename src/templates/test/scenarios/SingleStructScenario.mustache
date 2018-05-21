@@ -3,12 +3,12 @@ pragma solidity 0.4.24;
 import "../../contracts/StructLite.sol";
 
 
-contract {{ name.Plural }}FunctionParametersScenario {
+contract {{ name.Plural }}SingleStructScenario {
     using {{ name.Plural }} for {{ name.Plural }}.{{ name.UpperCamelCase }};
 
     {{ name.Plural }}.{{ name.UpperCamelCase }} private {{ name.lowerCamelCase }};
 
-    function exampleSetWholeStruct(
+    function write{{ name.UpperCamelCase }}(
         {{#each variables}}
         {{ type }} _{{ name.lowerCamelCase }}{{#unless @last}},{{/unless}}
         {{/each}}
@@ -20,21 +20,15 @@ contract {{ name.Plural }}FunctionParametersScenario {
         );
     }
 
-    function exampleSetSingleVariable(
-        {{#each variables}}
-        {{#if @first}}
+    {{#each variables}}
+    function write{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}(
         {{ type }} _{{ name.lowerCamelCase }}
-        {{/if}}
-        {{/each}}
     ) public {
-        {{#each variables}}
-        {{#if @first}}
         {{ ../name.lowerCamelCase }}.set{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}(_{{ name.lowerCamelCase }});
-        {{/if}}
-        {{/each}}
     }
+    {{/each}}
 
-    function exampleGetWholeStruct() public view returns(
+    function read{{ name.UpperCamelCase }}() public view returns(
         {{#each variables}}
         {{ type }}{{#unless @last}},{{/unless}}
         {{/each}}
@@ -42,17 +36,9 @@ contract {{ name.Plural }}FunctionParametersScenario {
         return {{ name.lowerCamelCase }}.get{{ name.UpperCamelCase }}();
     }
 
-    function exampleGetSingleVariable() public view returns(
-        {{#each variables}}
-        {{#if @first}}
-        {{ type }}
-        {{/if}}
-        {{/each}}
-    ) {
-        {{#each variables}}
-        {{#if @first}}
+    {{#each variables}}
+    function read{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}() public view returns({{ type }}) {
         return {{ ../name.lowerCamelCase }}.get{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}();
-        {{/if}}
-        {{/each}}
     }
+    {{/each}}
 }
