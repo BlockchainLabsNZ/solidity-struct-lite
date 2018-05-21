@@ -1,0 +1,56 @@
+pragma solidity 0.4.24;
+
+
+contract {{ name.Plural }}FunctionParametersScenario {
+    using {{ name.Plural }} for {{ name.Plural }}.{{ name.UpperCamelCase }};
+
+    {{ name.Plural }}.{{ name.UpperCamelCase }} private {{ name.lowerCamelCase }};
+
+    function exampleSetWholeStruct(
+        {{#each variables}}
+        {{ type }} _{{ name.lowerCamelCase }}{{#unless @last}},{{/unless}}
+        {{/each}}
+    ) public {
+        {{ name.lowerCamelCase }}.set{{ name.UpperCamelCase }}(
+            {{#each variables}}
+            _{{ name.lowerCamelCase }}{{#unless @last}},{{/unless}}
+            {{/each}}
+        );
+    }
+
+    function exampleSetSingleVariable(
+        {{#each variables}}
+        {{#if @first}}
+        {{ type }} _{{ name.lowerCamelCase }}
+        {{/if}}
+        {{/each}}
+    ) public {
+        {{#each variables}}
+        {{#if @first}}
+        {{ ../name.lowerCamelCase }}.set{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}(_{{ name.lowerCamelCase }});
+        {{/if}}
+        {{/each}}
+    }
+
+    function exampleGetWholeStruct() public view returns(
+        {{#each variables}}
+        {{ type }}{{#unless @last}},{{/unless}}
+        {{/each}}
+    ) {
+        return {{ name.lowerCamelCase }}.get{{ name.UpperCamelCase }}();
+    }
+
+    function exampleGetSingleVariable() public view returns(
+        {{#each variables}}
+        {{#if @first}}
+        {{ type }}
+        {{/if}}
+        {{/each}}
+    ) {
+        {{#each variables}}
+        {{#if @first}}
+        return {{ ../name.lowerCamelCase }}.get{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}();
+        {{/if}}
+        {{/each}}
+    }
+}

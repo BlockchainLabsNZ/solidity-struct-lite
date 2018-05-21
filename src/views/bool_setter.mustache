@@ -1,9 +1,0 @@
-function set{{ struct }}{{ name }}(bool _{{ name }}) public {
-    if (_{{ name }}) {
-        {{ struct }}Data[{{ index }}] = bytes32(
-            (uint256({{ struct }}Data[{{ index }}]) & {{ struct }}_{{ name }}_NEGATIVE_MASK) | {{ struct }}_{{ name }}_MASK
-        );
-    } else {
-        {{ struct }}Data[{{ index }}] = bytes32(uint256({{ struct }}Data[{{ index }}]) & {{ struct }}_{{ name }}_NEGATIVE_MASK);
-    }
-}

@@ -1,0 +1,121 @@
+pragma solidity 0.4.24;
+
+import "./{{ name.Plural }}Coder.sol";
+
+
+////
+// This library provides a simple API to access variables encoded within the StructLite.
+// To understand some of the possibilities on how to use the library, here is an example contract
+// using the library.
+//
+// contract Example {
+//     using {{ name.Plural }} for {{ name.Plural }}.{{ name.UpperCamelCase }};
+//
+//     ////
+//     // This could be a possible declaration. But it could also be an array.
+//     // Given the functionality given to StructLite. Every instance has to be private.
+//     ////
+//     {{ name.Plural }}.{{ name.UpperCamelCase }} private {{ name.lowerCamelCase }};
+//
+//     function exampleSetWholeStruct(
+           {{#each variables}}
+//         {{ type }} _{{ name.lowerCamelCase }}{{#unless @last}},{{/unless}}
+           {{/each}}
+//     ) public {
+//         {{ name.lowerCamelCase }}.set{{ name.UpperCamelCase }}(
+           {{#each variables}}
+//             _{{ name.lowerCamelCase }}{{#unless @last}},{{/unless}}
+           {{/each}}
+//         );
+//     }
+//
+//     function exampleSetSingleVariable(
+           {{#each variables}}
+           {{#if @first}}
+//         {{ type }} _{{ name.lowerCamelCase }}
+           {{/if}}
+           {{/each}}
+//     ) public {
+           {{#each variables}}
+           {{#if @first}}
+//         {{ ../name.lowerCamelCase }}.set{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}(_{{ name.lowerCamelCase }});
+           {{/if}}
+           {{/each}}
+//     }
+//
+//     function exampleGetWholeStruct() public view returns(
+           {{#each variables}}
+//         {{ type }}{{#unless @last}},{{/unless}}
+           {{/each}}
+//     ) {
+//         return {{ name.lowerCamelCase }}.get{{ name.UpperCamelCase }}();
+//     }
+//
+//     function exampleGetSingleVariable() public view returns(
+           {{#each variables}}
+           {{#if @first}}
+//         {{ type }}
+           {{/if}}
+           {{/each}}
+//     ) {
+           {{#each variables}}
+           {{#if @first}}
+//         return {{ ../name.lowerCamelCase }}.get{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}();
+           {{/if}}
+           {{/each}}
+//     }
+// }
+////
+library {{ name.Plural }} {
+    // This variable will contain all of the data.
+    struct {{ name.UpperCamelCase }} {
+        bytes32[{{ slotsLength }}] data;
+    }
+
+    ////
+    // Getters
+    ////
+    {{#each variables}}
+    {{#unless @first}}
+
+    {{/unless}}
+    function get{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}({{ ../name.UpperCamelCase }} _{{ ../name.lowerCamelCase }}) internal view returns({{ type }}) {
+        return {{ ../name.Plural }}Coder.decode{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}(_{{ ../name.lowerCamelCase }}.data);
+    }
+    {{/each}}
+
+    function get{{ name.UpperCamelCase }}({{ name.UpperCamelCase }} _{{ name.lowerCamelCase }}) internal view returns(
+        {{#each variables}}
+        {{ type }} {{ name.lowerCamelCase }}{{#unless @last}},{{/unless}}
+        {{/each}}
+    ) {
+        {{#each variables}}
+        {{ name.lowerCamelCase }} = {{ ../name.Plural }}Coder.decode{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}(_{{ ../name.lowerCamelCase }}.data);
+        {{/each}}
+    }
+
+    ////
+    // Setters
+    ////
+    {{#each variables}}
+    {{#unless @first}}
+
+    {{/unless}}
+    function set{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}({{ ../name.UpperCamelCase }} _{{ ../name.lowerCamelCase }}, {{ type }} _{{ name.lowerCamelCase }}) internal {
+        _{{ ../name.lowerCamelCase }}.data = {{ ../name.Plural }}Coder.encode{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}(_{{ ../name.lowerCamelCase }}.data, _{{ name.lowerCamelCase }});
+    }
+    {{/each}}
+
+    function set{{ name.UpperCamelCase }}(
+        {{ name.UpperCamelCase }} _{{ name.lowerCamelCase }},
+        {{#each variables}}
+        {{ type }} _{{ name.lowerCamelCase }}{{#unless @last}},{{/unless}}
+        {{/each}}
+    ) internal {
+        _{{ name.lowerCamelCase }}.data = {{ name.Plural }}Coder.encode{{ name.UpperCamelCase }}(
+            {{#each variables}}
+            _{{ name.lowerCamelCase }}{{#unless @last}},{{/unless}}
+            {{/each}}
+        );
+    }
+}

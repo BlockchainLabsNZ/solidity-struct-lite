@@ -1,7 +1,7 @@
 pragma solidity 0.4.24;
 
 
-library {{ name.plural }}Coder {
+library {{ name.Plural }}Coder {
     ////
     // Variable Declarations
     ////
@@ -98,59 +98,4 @@ library {{ name.plural }}Coder {
         );
     }
     {{/each}}
-}
-
-
-library {{ name.plural }} {
-    // This variable will contain all of the data.
-    struct {{ name.UpperCamelCase }} {
-        bytes32[{{ slotsLength }}] data;
-    }
-
-    ////
-    // Getters
-    ////
-    {{#each variables}}
-    {{#unless @first}}
-
-    {{/unless}}
-    function get{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}({{ ../name.UpperCamelCase }} storage _{{ ../name.lowerCamelCase }}) internal view returns({{ type }}) {
-        return {{ ../name.plural }}Coder.decode{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}(_{{ ../name.lowerCamelCase }}.data);
-    }
-    {{/each}}
-
-    function get{{ name.UpperCamelCase }}({{ name.UpperCamelCase }} storage _{{ name.lowerCamelCase }}) internal view returns(
-        {{#each variables}}
-        {{ type }} {{ name.lowerCamelCase }}{{#unless @last}},{{/unless}}
-        {{/each}}
-    ) {
-        {{#each variables}}
-        {{ name.lowerCamelCase }} = {{ ../name.plural }}Coder.decode{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}(_{{ ../name.lowerCamelCase }}.data);
-        {{/each}}
-    }
-
-    ////
-    // Setters
-    ////
-    {{#each variables}}
-    {{#unless @first}}
-
-    {{/unless}}
-    function set{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}({{ ../name.UpperCamelCase }} storage _{{ ../name.lowerCamelCase }}, {{ type }} _{{ name.lowerCamelCase }}) internal {
-        _{{ ../name.lowerCamelCase }}.data = {{ ../name.plural }}Coder.encode{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}(_{{ ../name.lowerCamelCase }}.data, _{{ name.lowerCamelCase }});
-    }
-    {{/each}}
-
-    function set{{ name.UpperCamelCase }}(
-        {{ name.UpperCamelCase }} storage _{{ name.lowerCamelCase }},
-        {{#each variables}}
-        {{ type }} _{{ name.lowerCamelCase }}{{#unless @last}},{{/unless}}
-        {{/each}}
-    ) internal {
-        _{{ name.lowerCamelCase }}.data = {{ name.plural }}Coder.encode{{ name.UpperCamelCase }}(
-            {{#each variables}}
-            _{{ name.lowerCamelCase }}{{#unless @last}},{{/unless}}
-            {{/each}}
-        );
-    }
 }

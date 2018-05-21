@@ -1,6 +1,0 @@
-function set{{ struct }}{{ name }}({{ type }} _{{ name }}) public {
-    {{ struct }}Data[{{ index }}] = bytes32(
-        (uint256({{ struct }}Data[{{ index }}]) & {{ struct }}_{{ name }}_NEGATIVE_MASK) |
-        (uint256(_{{ name }}) & {{ struct }}_{{ name }}_MASK)
-    );
-}

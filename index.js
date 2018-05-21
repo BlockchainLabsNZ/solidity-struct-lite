@@ -72,7 +72,8 @@ const calculateName = function(name) {
     CONSTANT: _.toUpper(sankeName),
     lowerCamelCase: _.camelCase(sankeName),
     UpperCamelCase: _.upperFirst(_.camelCase(sankeName)),
-    plural: pluralize(_.upperFirst(_.camelCase(sankeName)))
+    Plural: pluralize(_.upperFirst(_.camelCase(sankeName))),
+    plural: pluralize(_.camelCase(sankeName))
   };
 };
 
@@ -127,13 +128,24 @@ const tree = SolidityParser.parseFile(process.argv[2]);
 const structs = fetchStructs(tree);
 // const structs = require("./test/StructLitePOC.js");
 
-var library = Handlebars.compile(
-  fs.readFileSync("./src/views/library.mustache").toString()
+var StructLiteMock = Handlebars.compile(
+  fs
+    .readFileSync("./src/templates/contracts/StructLite.mustache")
+    // .readFileSync("./src/templates/contracts/StructLiteCoder.mustache")
+    // .readFileSync("./src/templates/test/mocks/StructLiteMock.mustache")
+    // .readFileSync(
+    //   "./src/templates/test/scenarios/FunctionParametersScenario.mustache"
+    // )
+    // .readFileSync(
+    //   "./src/templates/test/scenarios/SingleStructScenario.mustache"
+    // )
+    // .readFileSync("./src/templates/test/struct_lite_specs.mustache")
+    .toString()
 );
 
 structs.forEach(struct => {
   struct = parseStruct(struct);
-  let output = library(struct);
+  let output = StructLiteMock(struct);
 
   console.log(output);
 });
