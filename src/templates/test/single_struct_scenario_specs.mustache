@@ -1,0 +1,39 @@
+const BigNumber = require("bignumber.js");
+const constants = require("./utils/constants");
+
+const {{ name.Plural }} = artifacts.require('{{ name.Plural }}');
+const {{ name.Plural }}SingleStructScenario = artifacts.require('{{ name.Plural }}SingleStructScenario');
+
+
+contract('{{ name.Plural }}SingleStructScenario', () => {
+  it('Should Write and Read all of the variables in a bytes32[]', async () => {
+    let {{ name.plural }}SingleStructScenario = await {{ name.Plural }}SingleStructScenario.deployed();
+    await {{ name.plural }}SingleStructScenario.write{{ name.UpperCamelCase }}(
+      {{#each variables}}
+      constants[{{ type }}]{{#unless @last}},{{/unless}}
+      {{/each}}
+    );
+    {{#each variables}}
+    let {{ ../name.lowerCamelCase }}{{ name.UpperCamelCase }};
+    {{/each}}
+    [
+      {{#each variables}}
+      {{ ../name.lowerCamelCase }}{{ name.UpperCamelCase }}{{#unless @last}},{{/unless}}
+      {{/each}}
+    ] = await {{ name.plural }}SingleStructScenario.read{{ name.UpperCamelCase }}();
+    {{#each variables}}
+    assert.equal({{ ../name.lowerCamelCase }}{{ name.UpperCamelCase }}, constants[{{ type }}]);
+    {{/each}}
+  }
+  {{#each variables}}
+
+  it('Should Write and Read one {{ name.lowerCamelCase }}', async () => {
+    let {{ name.plural }}SingleStructScenario = await {{ name.Plural }}SingleStructScenario.deployed();
+    await {{ name.plural }}SingleStructScenario.write{{ name.UpperCamelCase }}(
+      constants[{{ type }}]{{#unless @last}},{{/unless}}
+    );
+    let {{ ../name.lowerCamelCase }}{{ name.UpperCamelCase }} = await {{ name.plural }}SingleStructScenario.read{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}();
+    assert.equal({{ ../name.lowerCamelCase }}{{ name.UpperCamelCase }}, constants[{{ type }}]);
+  }
+  {{/each}}
+}

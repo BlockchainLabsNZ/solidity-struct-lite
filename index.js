@@ -1,6 +1,5 @@
 const fs = require("fs");
 const SolidityParser = require("solidity-parser");
-const Mustache = require("mustache");
 const Handlebars = require("handlebars");
 const BigNumber = require("bignumber.js");
 const _ = require("lodash");

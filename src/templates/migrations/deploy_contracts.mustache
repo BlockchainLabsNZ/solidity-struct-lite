@@ -1,0 +1,10 @@
+var {{ name.Plural }}Coder = artifacts.require('{{ name.Plural }}Coder');
+var {{ name.Plural }} = artifacts.require('{{ name.Plural }}');
+
+module.exports = function(deployer, network) {
+    return deployer.then(async () => {
+        await deployer.deploy({{ name.Plural }}Coder);
+        await deployer.link({{ name.Plural }}Coder, {{ name.Plural }});
+        await deployer.deploy({{ name.Plural }});
+    });
+};
