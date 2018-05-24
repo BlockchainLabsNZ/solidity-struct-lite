@@ -9,12 +9,15 @@ contract {{ name.Plural }}StructArrayScenario {
     {{ name.Plural }}.{{ name.UpperCamelCase }}[] private {{ name.lowerCamelCase }};
 
     function write{{ name.UpperCamelCase }}(
-        uint256 index,
+        uint256 _index,
         {{#each variables}}
         {{ type }} _{{ name.lowerCamelCase }}{{#unless @last}},{{/unless}}
         {{/each}}
     ) public {
-        {{ name.lowerCamelCase }}[index].set{{ name.UpperCamelCase }}(
+        if ({{ name.lowerCamelCase }}.length <= _index){
+            {{ name.lowerCamelCase }}.length = _index + 1;
+        }
+        {{ name.lowerCamelCase }}[_index].set{{ name.UpperCamelCase }}(
             {{#each variables}}
             _{{ name.lowerCamelCase }}{{#unless @last}},{{/unless}}
             {{/each}}
@@ -23,24 +26,27 @@ contract {{ name.Plural }}StructArrayScenario {
 
     {{#each variables}}
     function write{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}(
-        uint256 index,
+        uint256 _index,
         {{ type }} _{{ name.lowerCamelCase }}
     ) public {
-        {{ ../name.lowerCamelCase }}[index].set{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}(_{{ name.lowerCamelCase }});
+        if ({{ name.lowerCamelCase }}.length <= _index){
+            {{ name.lowerCamelCase }}.length = _index + 1;
+        }
+        {{ ../name.lowerCamelCase }}[_index].set{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}(_{{ name.lowerCamelCase }});
     }
     {{/each}}
 
-    function read{{ name.UpperCamelCase }}(uint256 index) public view returns(
+    function read{{ name.UpperCamelCase }}(uint256 _index) public view returns(
         {{#each variables}}
         {{ type }}{{#unless @last}},{{/unless}}
         {{/each}}
     ) {
-        return {{ name.lowerCamelCase }}[index].get{{ name.UpperCamelCase }}();
+        return {{ name.lowerCamelCase }}[_index].get{{ name.UpperCamelCase }}();
     }
 
     {{#each variables}}
-    function read{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}(uint256 index) public view returns({{ type }}) {
-        return {{ ../name.lowerCamelCase }}[index].get{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}();
+    function read{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}(uint256 _index) public view returns({{ type }}) {
+        return {{ ../name.lowerCamelCase }}[_index].get{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}();
     }
     {{/each}}
 }

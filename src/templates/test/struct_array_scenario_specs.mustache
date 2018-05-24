@@ -1,0 +1,45 @@
+const BigNumber = require("bignumber.js");
+const constants = require("./utils/constants");
+
+const {{ name.Plural }}StructArrayScenario = artifacts.require('{{ name.Plural }}StructArrayScenario');
+
+
+contract('{{ name.Plural }}StructArrayScenario', () => {
+  it('Should Write and Read all of the variables in a bytes32[] in different indexes', async () => {
+    let {{ name.plural }}StructArrayScenario = await {{ name.Plural }}StructArrayScenario.deployed();
+    {{#each variables}}
+    let {{ ../name.lowerCamelCase }}{{ name.UpperCamelCase }};
+    {{/each}}
+    for (index = 0; index < 3; index++) {
+      await {{ name.plural }}StructArrayScenario.write{{ name.UpperCamelCase }}(
+        index,
+        {{#each variables}}
+        constants[{{ type }}]{{#unless @last}},{{/unless}}
+        {{/each}}
+      );
+      [
+        {{#each variables}}
+        {{ ../name.lowerCamelCase }}{{ name.UpperCamelCase }}{{#unless @last}},{{/unless}}
+        {{/each}}
+      ] = await {{ name.plural }}StructArrayScenario.read{{ name.UpperCamelCase }}(index);
+      {{#each variables}}
+      assert.equal({{ ../name.lowerCamelCase }}{{ name.UpperCamelCase }}, constants[{{ type }}]);
+      {{/each}}
+    }
+  }
+  {{#each variables}}
+
+  it('Should Write and Read one {{ name.lowerCamelCase }}', async () => {
+    let {{ name.plural }}StructArrayScenario = await {{ name.Plural }}StructArrayScenario.deployed();
+    let {{ ../name.lowerCamelCase }}{{ name.UpperCamelCase }};
+    for (index = 0; index < 3; index++) {
+      await {{ name.plural }}StructArrayScenario.write{{ name.UpperCamelCase }}(
+        index,
+        constants[{{ type }}]{{#unless @last}},{{/unless}}
+      );
+      {{ ../name.lowerCamelCase }}{{ name.UpperCamelCase }} = await {{ name.plural }}StructArrayScenario.read{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}(index);
+      assert.equal({{ ../name.lowerCamelCase }}{{ name.UpperCamelCase }}, constants[{{ type }}]);
+    }
+  }
+  {{/each}}
+}

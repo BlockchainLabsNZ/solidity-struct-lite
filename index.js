@@ -1,7 +1,6 @@
 const fs = require("fs");
 const SolidityParser = require("solidity-parser");
 const Handlebars = require("handlebars");
-const BigNumber = require("bignumber.js");
 const _ = require("lodash");
 const pluralize = require("pluralize");
 const constants = require("./src/constants.js");
@@ -132,14 +131,12 @@ var StructLiteMock = Handlebars.compile(
     .readFileSync("./src/templates/contracts/StructLite.mustache")
     // .readFileSync("./src/templates/contracts/StructLiteCoder.mustache")
     // .readFileSync("./src/templates/test/mocks/StructLiteMock.mustache")
-    // .readFileSync(
-    //   "./src/templates/test/scenarios/FunctionParametersScenario.mustache"
-    // )
-    // .readFileSync(
-    //   "./src/templates/test/scenarios/SingleStructScenario.mustache"
-    // )
+    // .readFileSync("./src/templates/test/scenarios/FunctionParametersScenario.mustache")
+    // .readFileSync("./src/templates/test/scenarios/SingleStructScenario.mustache"3)
     // .readFileSync("./src/templates/test/scenarios/StructArrayScenario.mustache")
-    // .readFileSync("./src/templates/test/struct_lite_specs.mustache")
+    // .readFileSync("./src/templates/test/function_parameters_scenario_specs.mustache")
+    // .readFileSync("./src/templates/test/single_struct_scenario_specs.mustache")
+    // .readFileSync("./src/templates/test/struct_array_scenario_specs.mustache")
     .toString()
 );
 
