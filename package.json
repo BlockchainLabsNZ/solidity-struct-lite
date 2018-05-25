@@ -4,7 +4,10 @@
   "description":
     "A solidity tool that allows the creation of gas efficient Structures.",
   "main": "index.js",
-  "author": "Klaus Hott Vidal <klahott@gmail.com>",
+  "authors": [
+    "Klaus Hott Vidal <klahott@gmail.com>",
+    "Matt Lough <im.mattlough@gmail.com>"
+  ],
   "license": "MIT",
   "bin": {
     "solidity-struct-lite": "./index.js"
