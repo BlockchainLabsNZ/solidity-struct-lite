@@ -65,13 +65,13 @@ const calculateNegativeMask = function(mask) {
 };
 
 const calculateName = function(name) {
-  let sankeName = _.snakeCase(name);
+  let snakeName = _.snakeCase(name);
   return {
-    CONSTANT: _.toUpper(sankeName),
-    lowerCamelCase: _.camelCase(sankeName),
-    UpperCamelCase: _.upperFirst(_.camelCase(sankeName)),
-    Plural: pluralize(_.upperFirst(_.camelCase(sankeName))),
-    plural: pluralize(_.camelCase(sankeName))
+    CONSTANT: _.toUpper(snakeName),
+    lowerCamelCase: _.camelCase(snakeName),
+    UpperCamelCase: _.upperFirst(_.camelCase(snakeName)),
+    Plural: pluralize(_.upperFirst(_.camelCase(snakeName))),
+    plural: pluralize(_.camelCase(snakeName))
   };
 };
 
@@ -122,27 +122,37 @@ const parseStruct = function(struct) {
   };
 };
 
-const tree = SolidityParser.parseFile(process.argv[2]);
-const structs = fetchStructs(tree);
-// const structs = require("./test/StructLitePOC.js");
+if (typeof process.argv[2] === "undefined") {
+  console.log(
+    "You did not specify a filename. Usage: node index.js [contract.sol]"
+  );
+} else {
+  main();
+}
 
-var StructLiteMock = Handlebars.compile(
-  fs
-    .readFileSync("./src/templates/contracts/StructLite.mustache")
-    // .readFileSync("./src/templates/contracts/StructLiteCoder.mustache")
-    // .readFileSync("./src/templates/test/mocks/StructLiteMock.mustache")
-    // .readFileSync("./src/templates/test/scenarios/FunctionParametersScenario.mustache")
-    // .readFileSync("./src/templates/test/scenarios/SingleStructScenario.mustache"3)
-    // .readFileSync("./src/templates/test/scenarios/StructArrayScenario.mustache")
-    // .readFileSync("./src/templates/test/function_parameters_scenario_specs.mustache")
-    // .readFileSync("./src/templates/test/single_struct_scenario_specs.mustache")
-    // .readFileSync("./src/templates/test/struct_array_scenario_specs.mustache")
-    .toString()
-);
+function main() {
+  const tree = SolidityParser.parseFile(process.argv[2]);
+  const structs = fetchStructs(tree);
+  // const structs = require("./test/StructLitePOC.js");
 
-structs.forEach(struct => {
-  struct = parseStruct(struct);
-  let output = StructLiteMock(struct);
+  var library = Handlebars.compile(
+    fs
+      .readFileSync("./src/templates/contracts/StructLite.mustache")
+      // .readFileSync("./src/templates/contracts/StructLiteCoder.mustache")
+      // .readFileSync("./src/templates/test/mocks/StructLiteMock.mustache")
+      // .readFileSync("./src/templates/test/scenarios/FunctionParametersScenario.mustache")
+      // .readFileSync("./src/templates/test/scenarios/SingleStructScenario.mustache"3)
+      // .readFileSync("./src/templates/test/scenarios/StructArrayScenario.mustache")
+      // .readFileSync("./src/templates/test/function_parameters_scenario_specs.mustache")
+      // .readFileSync("./src/templates/test/single_struct_scenario_specs.mustache")
+      // .readFileSync("./src/templates/test/struct_array_scenario_specs.mustache")
+      .toString()
+  );
 
-  console.log(output);
-});
+  structs.forEach(struct => {
+    struct = parseStruct(struct);
+    let output = library(struct);
+
+    console.log(output);
+  });
+}

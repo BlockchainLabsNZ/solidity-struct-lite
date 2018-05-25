@@ -4,7 +4,7 @@ The solidity compiler tries it's best, but let's help it out a little. This libr
 
 ## Getting Started
 
-### Prerequisites 
+### Prerequisites
 
 - A solidity contract that makes use of the `struct` type
 
@@ -19,7 +19,7 @@ npm install
 ### Usage
 
 ```bash
-node index.js
+node index.js ExampleContract.sol
 ```
 
 ## Running the tests
