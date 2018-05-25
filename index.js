@@ -127,11 +127,12 @@ if (typeof process.argv[2] === "undefined") {
     "You did not specify a filename. Usage: node index.js [contract.sol]"
   );
 } else {
-  main();
+  main(process.argv[2]);
 }
 
-function main() {
-  const tree = SolidityParser.parseFile(process.argv[2]);
+function main(filepath) {
+  const BUILD_DIR = "./build/";
+  const tree = SolidityParser.parseFile(filepath);
   const structs = fetchStructs(tree);
   // const structs = require("./test/StructLitePOC.js");
 
@@ -149,10 +150,19 @@ function main() {
       .toString()
   );
 
+  if (!fs.existsSync(BUILD_DIR)) {
+    fs.mkdirSync(BUILD_DIR);
+  }
   structs.forEach(struct => {
     struct = parseStruct(struct);
     let output = library(struct);
 
-    console.log(output);
+    let filename = filepath.replace(/^.*[\\\/]/, "");
+    fs.writeFile(BUILD_DIR + filename, output, function(err) {
+      if (err) {
+        return console.log(err);
+      }
+      console.log(BUILD_DIR + filename + " created");
+    });
   });
 }
