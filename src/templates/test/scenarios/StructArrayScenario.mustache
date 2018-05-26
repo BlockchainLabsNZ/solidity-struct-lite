@@ -1,6 +1,6 @@
 pragma solidity 0.4.24;
 
-import "../../contracts/StructLite.sol";
+import "../../contracts/{{ name.Plural }}.sol";
 
 
 contract {{ name.Plural }}StructArrayScenario {
@@ -29,8 +29,8 @@ contract {{ name.Plural }}StructArrayScenario {
         uint256 _index,
         {{ type }} _{{ name.lowerCamelCase }}
     ) public {
-        if ({{ name.lowerCamelCase }}.length <= _index){
-            {{ name.lowerCamelCase }}.length = _index + 1;
+        if ({{ ../name.lowerCamelCase }}.length <= _index){
+            {{ ../name.lowerCamelCase }}.length = _index + 1;
         }
         {{ ../name.lowerCamelCase }}[_index].set{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}(_{{ name.lowerCamelCase }});
     }

@@ -1,3 +1,4 @@
+var {{ name.Plural }}Coder = artifacts.require('{{ name.Plural }}Coder');
 var {{ name.Plural }} = artifacts.require('{{ name.Plural }}');
 var {{ name.Plural }}FunctionParametersScenario = artifacts.require('{{ name.Plural }}FunctionParametersScenario');
 var {{ name.Plural }}SingleStructScenario = artifacts.require('{{ name.Plural }}SingleStructScenario');
@@ -8,6 +9,9 @@ module.exports = function(deployer, network) {
         await deployer.link({{ name.Plural }}, {{ name.Plural }}FunctionParametersScenario);
         await deployer.link({{ name.Plural }}, {{ name.Plural }}SingleStructScenario);
         await deployer.link({{ name.Plural }}, {{ name.Plural }}StructArrayScenario);
+        await deployer.link({{ name.Plural }}Coder, {{ name.Plural }}FunctionParametersScenario);
+        await deployer.link({{ name.Plural }}Coder, {{ name.Plural }}SingleStructScenario);
+        await deployer.link({{ name.Plural }}Coder, {{ name.Plural }}StructArrayScenario);
         await deployer.deploy({{ name.Plural }}FunctionParametersScenario);
         await deployer.deploy({{ name.Plural }}SingleStructScenario);
         await deployer.deploy({{ name.Plural }}StructArrayScenario);
