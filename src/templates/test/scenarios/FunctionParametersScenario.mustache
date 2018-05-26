@@ -12,7 +12,7 @@ contract {{ name.Plural }}FunctionParametersScenario {
         {{ type }} {{ name.lowerCamelCase }}{{#unless @last}},{{/unless}}
         {{/each}}
     ) {
-        {{ name.Plural }}.{{ name.UpperCamelCase }} memory _{{ name.lowerCamelCase }};
+        {{ name.Plural }}.{{ name.UpperCamelCase }} storage _{{ name.lowerCamelCase }};
         _{{ name.lowerCamelCase }}.data = _{{ name.lowerCamelCase }}Data;
         emit SuccessfulyParsed();
         return _{{ name.lowerCamelCase }}.get{{ name.UpperCamelCase }}();
@@ -23,7 +23,7 @@ contract {{ name.Plural }}FunctionParametersScenario {
         {{ type }} {{ name.lowerCamelCase }}{{#unless @last}},{{/unless}}
         {{/each}}
     ) {
-        {{ name.Plural }}.{{ name.UpperCamelCase }}[10] memory _{{ name.lowerCamelCase }};
+        {{ name.Plural }}.{{ name.UpperCamelCase }}[10] storage _{{ name.lowerCamelCase }};
         for (uint i = 0; i < _{{ name.lowerCamelCase }}Data.length; i++) {
             _{{ name.lowerCamelCase }}[i].data = _{{ name.lowerCamelCase }}Data[i];
         }
@@ -40,7 +40,7 @@ contract {{ name.Plural }}FunctionParametersScenario {
         {{ type }} {{ name.lowerCamelCase }}{{#unless @last}},{{/unless}}
         {{/each}}
     ) {
-        {{ name.Plural }}.{{ name.UpperCamelCase }}[] memory _{{ name.lowerCamelCase }};
+        {{ name.Plural }}.{{ name.UpperCamelCase }}[] storage _{{ name.lowerCamelCase }};
         for (uint i = 0; i < _{{ name.lowerCamelCase }}DataSlot0.length; i++) {
             {{#each slots}}
             _{{ ../name.lowerCamelCase }}[i].data[{{ @index }}] = _{{ ../name.lowerCamelCase }}DataSlot{{ @index }}[i];
