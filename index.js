@@ -102,6 +102,10 @@ const parseStruct = function(struct) {
       mask: mask,
       negative_mask: calculateNegativeMask(mask),
       isBool: type == "bool",
+      isAddress: type == "address",
+      isBytes: type.startsWith("bytes"),
+      isUint: type.startsWith("uint"),
+      isInt: type.startsWith("int"),
       isFirst: isFirst
     });
     return accumulator;

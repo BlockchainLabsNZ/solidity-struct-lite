@@ -1,0 +1,19 @@
+const BigNumber = require("bignumber.js");
+
+module.exports = function(type, a, b) {
+  if (type == "bool") {
+    return a === b;
+  }
+  if (type == "address") {
+    return a === b;
+  }
+  if (type.startsWith("bytes")) {
+    return a === b;
+  }
+  if (type.startsWith("uint")) {
+    return new BigNumber(b).eq(a);
+  }
+  if (type.startsWith("int")) {
+    return new BigNumber(b).eq(a);
+  }
+}
