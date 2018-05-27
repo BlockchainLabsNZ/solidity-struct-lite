@@ -5,7 +5,6 @@ import "../../contracts/{{ name.Plural }}.sol";
 
 contract {{ name.Plural }}FunctionParametersScenario {
     using {{ name.Plural }} for {{ name.Plural }}.{{ name.UpperCamelCase }};
-    event SuccessfulyParsed();
 
     function singleStruct(bytes32[{{ slotsLength }}] _{{ name.lowerCamelCase }}Data) public returns(
         {{#each variables}}
@@ -14,7 +13,6 @@ contract {{ name.Plural }}FunctionParametersScenario {
     ) {
         {{ name.Plural }}.{{ name.UpperCamelCase }} storage _{{ name.lowerCamelCase }};
         _{{ name.lowerCamelCase }}.data = _{{ name.lowerCamelCase }}Data;
-        emit SuccessfulyParsed();
         return _{{ name.lowerCamelCase }}.get{{ name.UpperCamelCase }}();
     }
 
@@ -23,12 +21,11 @@ contract {{ name.Plural }}FunctionParametersScenario {
         {{ type }} {{ name.lowerCamelCase }}{{#unless @last}},{{/unless}}
         {{/each}}
     ) {
-        {{ name.Plural }}.{{ name.UpperCamelCase }}[10] storage _{{ name.lowerCamelCase }};
+        {{ name.Plural }}.{{ name.UpperCamelCase }}[10] storage _{{ name.plural }};
         for (uint i = 0; i < _{{ name.lowerCamelCase }}Data.length; i++) {
-            _{{ name.lowerCamelCase }}[i].data = _{{ name.lowerCamelCase }}Data[i];
+            _{{ name.plural }}[i].data = _{{ name.lowerCamelCase }}Data[i];
         }
-        emit SuccessfulyParsed();
-        return _{{ name.lowerCamelCase }}[0].get{{ name.UpperCamelCase }}();
+        return _{{ name.plural }}[0].get{{ name.UpperCamelCase }}();
     }
 
     function unknownLengthStructArray(
@@ -40,13 +37,13 @@ contract {{ name.Plural }}FunctionParametersScenario {
         {{ type }} {{ name.lowerCamelCase }}{{#unless @last}},{{/unless}}
         {{/each}}
     ) {
-        {{ name.Plural }}.{{ name.UpperCamelCase }}[] storage _{{ name.lowerCamelCase }};
+        {{ name.Plural }}.{{ name.UpperCamelCase }}[] storage _{{ name.plural }};
+        _{{ name.plural }}.length = _{{ name.lowerCamelCase }}DataSlot0.length;
         for (uint i = 0; i < _{{ name.lowerCamelCase }}DataSlot0.length; i++) {
             {{#each slots}}
-            _{{ ../name.lowerCamelCase }}[i].data[{{ @index }}] = _{{ ../name.lowerCamelCase }}DataSlot{{ @index }}[i];
+            _{{ ../name.plural }}[i].data[{{ @index }}] = _{{ ../name.lowerCamelCase }}DataSlot{{ @index }}[i];
             {{/each}}
         }
-        emit SuccessfulyParsed();
-        return _{{ name.lowerCamelCase }}[0].get{{ name.UpperCamelCase }}();
+        return _{{ name.plural }}[0].get{{ name.UpperCamelCase }}();
     }
 }
