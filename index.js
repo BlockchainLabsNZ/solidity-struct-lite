@@ -4,6 +4,7 @@ const Handlebars = require("handlebars");
 const _ = require("lodash");
 const pluralize = require("pluralize");
 const constants = require("./src/constants.js");
+const { execSync } = require('child_process');
 
 const fetchStructs = function(statement) {
   if (statement.type == "StructDeclaration") {
@@ -70,6 +71,8 @@ const calculateName = function(name) {
     CONSTANT: _.toUpper(snakeName),
     lowerCamelCase: _.camelCase(snakeName),
     UpperCamelCase: _.upperFirst(_.camelCase(snakeName)),
+    lowerSnakeCase: snakeName,
+    UpperSnakeCase: _.upperFirst(snakeName),
     Plural: pluralize(_.upperFirst(_.camelCase(snakeName))),
     plural: pluralize(_.camelCase(snakeName))
   };
@@ -130,39 +133,88 @@ if (typeof process.argv[2] === "undefined") {
   main(process.argv[2]);
 }
 
+function getCompiledLibrary(pathToTpl) {
+  return Handlebars.compile(fs.readFileSync(pathToTpl).toString());
+}
+
 function main(filepath) {
+  // Create Build Directory if it doesn't already exist
   const BUILD_DIR = "./build/";
+  if (!fs.existsSync(BUILD_DIR)) {
+    fs.mkdirSync(BUILD_DIR);
+  }
+  let out = execSync('truffle init', { cwd: "build/" });
+  const BUILD_DIRS = [
+    "/test/scenarios/",
+    "/test/utils/"
+  ];
+  BUILD_DIRS.forEach(dirName => {
+    if (!fs.existsSync(BUILD_DIR + dirName)) {
+      fs.mkdirSync(BUILD_DIR + dirName);
+    }
+  });
+
   const tree = SolidityParser.parseFile(filepath);
   const structs = fetchStructs(tree);
   // const structs = require("./test/StructLitePOC.js");
 
-  var library = Handlebars.compile(
-    fs
-      .readFileSync("./src/templates/contracts/StructLite.mustache")
-      // .readFileSync("./src/templates/contracts/StructLiteCoder.mustache")
-      // .readFileSync("./src/templates/test/mocks/StructLiteMock.mustache")
-      // .readFileSync("./src/templates/test/scenarios/FunctionParametersScenario.mustache")
-      // .readFileSync("./src/templates/test/scenarios/SingleStructScenario.mustache"3)
-      // .readFileSync("./src/templates/test/scenarios/StructArrayScenario.mustache")
-      // .readFileSync("./src/templates/test/function_parameters_scenario_specs.mustache")
-      // .readFileSync("./src/templates/test/single_struct_scenario_specs.mustache")
-      // .readFileSync("./src/templates/test/struct_array_scenario_specs.mustache")
-      .toString()
-  );
-
-  if (!fs.existsSync(BUILD_DIR)) {
-    fs.mkdirSync(BUILD_DIR);
-  }
   structs.forEach(struct => {
     struct = parseStruct(struct);
-    let output = library(struct);
-
-    let filename = filepath.replace(/^.*[\\\/]/, "");
-    fs.writeFile(BUILD_DIR + filename, output, function(err) {
-      if (err) {
-        return console.log(err);
+    // All directories in outputPath are relative to the BUILD_DIR
+    let templates = [
+      // Contracts
+      {
+        "path": "./src/templates/contracts/StructLite.mustache",
+        "outputPath": "contracts/" + struct.name.UpperCamelCase + ".sol"
+      },
+      {
+        "path": "./src/templates/contracts/StructLiteCoder.mustache",
+        "outputPath": "contracts/" + struct.name.Plural + "Coder.sol"
+      },
+      // Mock Contracts
+      // {
+      //   "path": "./src/templates/test/mocks/StructLiteMock.mustache",
+      //   "outputPath": "test/mocks/" + struct.name.UpperCamelCase + ".sol"
+      // },
+      // Test Scenarios
+      {
+        "path": "./src/templates/test/scenarios/FunctionParametersScenario.mustache",
+        "outputPath": "test/scenarios/" + struct.name.UpperCamelCase + "FunctionParametersScenario.sol"
+      },
+      {
+        "path": "./src/templates/test/scenarios/SingleStructScenario.mustache",
+        "outputPath": "test/scenarios/" + struct.name.UpperCamelCase + "SingleStructScenario.sol"
+      },
+      {
+        "path": "./src/templates/test/scenarios/StructArrayScenario.mustache",
+        "outputPath": "test/scenarios/" + struct.name.UpperCamelCase + "StructArrayScenario.sol"
+      },
+      // Spec files
+      // {
+      //   "path": "./src/templates/test/function_parameters_scenario_specs.mustache",
+      //   "outputPath": "test/function_parameters_scenario_specs.js"
+      // },
+      {
+        "path": "./src/templates/test/single_struct_scenario_specs.mustache",
+        "outputPath": "test/single_struct_scenario_specs.js"
+      },
+      {
+        "path": "./src/templates/test/struct_array_scenario_specs.mustache",
+        "outputPath": "test/struct_array_scenario_specs.js"
       }
-      console.log(BUILD_DIR + filename + " created");
+    ];
+
+    templates.forEach(function processTemplate(tplData) {
+      let library = getCompiledLibrary(tplData["path"]);
+      let output = library(struct);
+      let filename = filepath.replace(/^.*[\\\/]/, "");
+      fs.writeFile(BUILD_DIR + tplData['outputPath'], output, function(err) {
+        if (err) {
+          return console.log(err);
+        }
+        console.log(BUILD_DIR + tplData['outputPath'] + " created");
+      });
     });
+
   });
 }
