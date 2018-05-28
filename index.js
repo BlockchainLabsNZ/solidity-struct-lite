@@ -105,6 +105,10 @@ const parseStruct = function(struct) {
       mask: mask,
       negative_mask: calculateNegativeMask(mask),
       isBool: type == "bool",
+      isAddress: type == "address",
+      isBytes: type.startsWith("bytes"),
+      isUint: type.startsWith("uint"),
+      isInt: type.startsWith("int"),
       isFirst: isFirst
     });
     return accumulator;
@@ -165,7 +169,7 @@ function main(filepath) {
       // Contracts
       {
         "path": "./src/templates/contracts/StructLite.mustache",
-        "outputPath": "contracts/" + struct.name.UpperCamelCase + ".sol"
+        "outputPath": "contracts/" + struct.name.Plural + ".sol"
       },
       {
         "path": "./src/templates/contracts/StructLiteCoder.mustache",
@@ -179,21 +183,21 @@ function main(filepath) {
       // Test Scenarios
       {
         "path": "./src/templates/test/scenarios/FunctionParametersScenario.mustache",
-        "outputPath": "test/scenarios/" + struct.name.UpperCamelCase + "FunctionParametersScenario.sol"
+        "outputPath": "test/scenarios/" + struct.name.Plural + "FunctionParametersScenario.sol"
       },
       {
         "path": "./src/templates/test/scenarios/SingleStructScenario.mustache",
-        "outputPath": "test/scenarios/" + struct.name.UpperCamelCase + "SingleStructScenario.sol"
+        "outputPath": "test/scenarios/" + struct.name.Plural + "SingleStructScenario.sol"
       },
       {
         "path": "./src/templates/test/scenarios/StructArrayScenario.mustache",
-        "outputPath": "test/scenarios/" + struct.name.UpperCamelCase + "StructArrayScenario.sol"
+        "outputPath": "test/scenarios/" + struct.name.Plural + "StructArrayScenario.sol"
       },
       // Spec files
-      // {
-      //   "path": "./src/templates/test/function_parameters_scenario_specs.mustache",
-      //   "outputPath": "test/function_parameters_scenario_specs.js"
-      // },
+      {
+        "path": "./src/templates/test/function_parameters_scenario_specs.mustache",
+        "outputPath": "test/function_parameters_scenario_specs.js"
+      },
       {
         "path": "./src/templates/test/single_struct_scenario_specs.mustache",
         "outputPath": "test/single_struct_scenario_specs.js"
@@ -201,6 +205,24 @@ function main(filepath) {
       {
         "path": "./src/templates/test/struct_array_scenario_specs.mustache",
         "outputPath": "test/struct_array_scenario_specs.js"
+      },
+      // Utils
+      {
+        "path": "./src/templates/test/utils/comparator.mustache",
+        "outputPath": "test/utils/comparator.js"
+      },
+      {
+        "path": "./src/templates/test/utils/constants.mustache",
+        "outputPath": "test/utils/constants.js"
+      },
+      // Migrations
+      {
+        "path": "./src/templates/migrations/2_deploy_contracts.mustache",
+        "outputPath": "migrations/2_deploy_contracts.js"
+      },
+      {
+        "path": "./src/templates/migrations/3_deploy_scenarios.mustache",
+        "outputPath": "migrations/3_deploy_scenarios.js"
       }
     ];
 

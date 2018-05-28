@@ -79,12 +79,12 @@ library {{ name.Plural }} {
     {{#unless @first}}
 
     {{/unless}}
-    function get{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}({{ ../name.UpperCamelCase }} _{{ ../name.lowerCamelCase }}) internal view returns({{ type }}) {
+    function get{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}({{ ../name.UpperCamelCase }} storage _{{ ../name.lowerCamelCase }}) internal view returns({{ type }}) {
         return {{ ../name.Plural }}Coder.decode{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}(_{{ ../name.lowerCamelCase }}.data);
     }
     {{/each}}
 
-    function get{{ name.UpperCamelCase }}({{ name.UpperCamelCase }} _{{ name.lowerCamelCase }}) internal view returns(
+    function get{{ name.UpperCamelCase }}({{ name.UpperCamelCase }} storage _{{ name.lowerCamelCase }}) internal view returns(
         {{#each variables}}
         {{ type }} {{ name.lowerCamelCase }}{{#unless @last}},{{/unless}}
         {{/each}}
@@ -101,13 +101,13 @@ library {{ name.Plural }} {
     {{#unless @first}}
 
     {{/unless}}
-    function set{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}({{ ../name.UpperCamelCase }} _{{ ../name.lowerCamelCase }}, {{ type }} _{{ name.lowerCamelCase }}) internal {
+    function set{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}({{ ../name.UpperCamelCase }} storage _{{ ../name.lowerCamelCase }}, {{ type }} _{{ name.lowerCamelCase }}) internal {
         _{{ ../name.lowerCamelCase }}.data = {{ ../name.Plural }}Coder.encode{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}(_{{ ../name.lowerCamelCase }}.data, _{{ name.lowerCamelCase }});
     }
     {{/each}}
 
     function set{{ name.UpperCamelCase }}(
-        {{ name.UpperCamelCase }} _{{ name.lowerCamelCase }},
+        {{ name.UpperCamelCase }} storage _{{ name.lowerCamelCase }},
         {{#each variables}}
         {{ type }} _{{ name.lowerCamelCase }}{{#unless @last}},{{/unless}}
         {{/each}}

@@ -1,15 +1,14 @@
-const BigNumber = require("bignumber.js");
+const comparator = require("./utils/comparator");
 const constants = require("./utils/constants");
 
-const {{ name.Plural }}SingleStructScenario = artifacts.require('{{ name.Plural }}SingleStructScenario');
+const {{ name.Plural }}SingleStructScenario = artifacts.require("{{ name.Plural }}SingleStructScenario");
 
-
-contract('{{ name.Plural }}SingleStructScenario', () => {
-  it('Should Write and Read all of the variables in a bytes32[]', async () => {
+contract("{{ name.Plural }}SingleStructScenario", () => {
+  it("Should Write and Read all of the variables in a bytes32[]", async () => {
     let {{ name.plural }}SingleStructScenario = await {{ name.Plural }}SingleStructScenario.deployed();
     await {{ name.plural }}SingleStructScenario.write{{ name.UpperCamelCase }}(
       {{#each variables}}
-      constants[{{ type }}]{{#unless @last}},{{/unless}}
+      constants["{{ type }}"]{{#unless @last}},{{/unless}}
       {{/each}}
     );
     {{#each variables}}
@@ -21,18 +20,18 @@ contract('{{ name.Plural }}SingleStructScenario', () => {
       {{/each}}
     ] = await {{ name.plural }}SingleStructScenario.read{{ name.UpperCamelCase }}();
     {{#each variables}}
-    assert.equal({{ ../name.lowerCamelCase }}{{ name.UpperCamelCase }}, constants[{{ type }}]);
+    assert.isTrue(comparator("{{ type }}", {{ ../name.lowerCamelCase }}{{ name.UpperCamelCase }}, constants["{{ type }}"]));
     {{/each}}
-  }
+  });
   {{#each variables}}
 
-  it('Should Write and Read one {{ name.lowerCamelCase }}', async () => {
-    let {{ name.plural }}SingleStructScenario = await {{ name.Plural }}SingleStructScenario.deployed();
-    await {{ name.plural }}SingleStructScenario.write{{ name.UpperCamelCase }}(
-      constants[{{ type }}]{{#unless @last}},{{/unless}}
+  it("Should Write and Read one {{ name.lowerCamelCase }}", async () => {
+    let {{ ../name.plural }}SingleStructScenario = await {{ ../name.Plural }}SingleStructScenario.deployed();
+    await {{ ../name.plural }}SingleStructScenario.write{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}(
+      constants["{{ type }}"]
     );
-    let {{ ../name.lowerCamelCase }}{{ name.UpperCamelCase }} = await {{ name.plural }}SingleStructScenario.read{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}();
-    assert.equal({{ ../name.lowerCamelCase }}{{ name.UpperCamelCase }}, constants[{{ type }}]);
-  }
+    let {{ ../name.lowerCamelCase }}{{ name.UpperCamelCase }} = await {{ ../name.plural }}SingleStructScenario.read{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}();
+    assert.isTrue(comparator("{{ type }}", {{ ../name.lowerCamelCase }}{{ name.UpperCamelCase }}, constants["{{ type }}"]));
+  });
   {{/each}}
-}
+});

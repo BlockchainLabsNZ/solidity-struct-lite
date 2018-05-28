@@ -1,34 +1,33 @@
 pragma solidity 0.4.24;
 
-import "../../contracts/StructLite.sol";
+import "../../contracts/{{ name.Plural }}Coder.sol";
 
 
 contract {{ name.Plural }}FunctionParametersScenario {
-    using {{ name.Plural }} for {{ name.Plural }}.{{ name.UpperCamelCase }};
-    event SuccessfulyParsed();
-
-    function singleStruct(bytes32[{{ slotsLength }}] _{{ name.lowerCamelCase }}Data) public returns(
+    function singleStruct(bytes32[{{ slotsLength }}] _{{ name.lowerCamelCase }}Data) public pure returns(
         {{#each variables}}
         {{ type }} {{ name.lowerCamelCase }}{{#unless @last}},{{/unless}}
         {{/each}}
     ) {
-        {{ name.Plural }}.{{ name.UpperCamelCase }} memory _{{ name.lowerCamelCase }};
-        _{{ name.lowerCamelCase }}.data = _{{ name.lowerCamelCase }}Data;
-        emit SuccessfulyParsed();
-        return _{{ name.lowerCamelCase }}.get{{ name.UpperCamelCase }}();
+        bytes32[{{ slotsLength }}] memory _{{ name.lowerCamelCase }};
+        _{{ name.lowerCamelCase }} = _{{ name.lowerCamelCase }}Data;
+        {{#each variables}}
+        {{ name.lowerCamelCase }} = {{ ../name.Plural }}Coder.decode{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}(_{{ ../name.lowerCamelCase }});
+        {{/each}}
     }
 
-    function knownLengthStructArray(bytes32[{{ slotsLength }}][10] _{{ name.lowerCamelCase }}Data) public returns(
+    function knownLengthStructArray(bytes32[{{ slotsLength }}][10] _{{ name.lowerCamelCase }}Data) public pure returns(
         {{#each variables}}
         {{ type }} {{ name.lowerCamelCase }}{{#unless @last}},{{/unless}}
         {{/each}}
     ) {
-        {{ name.Plural }}.{{ name.UpperCamelCase }}[10] memory _{{ name.lowerCamelCase }};
+        bytes32[{{ slotsLength }}][10] memory _{{ name.plural }};
         for (uint i = 0; i < _{{ name.lowerCamelCase }}Data.length; i++) {
-            _{{ name.lowerCamelCase }}[i].data = _{{ name.lowerCamelCase }}Data[i];
+            _{{ name.plural }}[i] = _{{ name.lowerCamelCase }}Data[i];
         }
-        emit SuccessfulyParsed();
-        return _{{ name.lowerCamelCase }}[0].get{{ name.UpperCamelCase }}();
+        {{#each variables}}
+        {{ name.lowerCamelCase }} = {{ ../name.Plural }}Coder.decode{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}(_{{ ../name.plural }}[0]);
+        {{/each}}
     }
 
     function unknownLengthStructArray(
@@ -40,13 +39,15 @@ contract {{ name.Plural }}FunctionParametersScenario {
         {{ type }} {{ name.lowerCamelCase }}{{#unless @last}},{{/unless}}
         {{/each}}
     ) {
-        {{ name.Plural }}.{{ name.UpperCamelCase }}[] memory _{{ name.lowerCamelCase }};
+        bytes32[{{ slotsLength }}][] storage _{{ name.plural }};
+        _{{ name.plural }}.length = _{{ name.lowerCamelCase }}DataSlot0.length;
         for (uint i = 0; i < _{{ name.lowerCamelCase }}DataSlot0.length; i++) {
             {{#each slots}}
-            _{{ ../name.lowerCamelCase }}[i].data[{{ @index }}] = _{{ ../name.lowerCamelCase }}DataSlot{{ @index }}[i];
+            _{{ ../name.plural }}[i][{{ @index }}] = _{{ ../name.lowerCamelCase }}DataSlot{{ @index }}[i];
             {{/each}}
         }
-        emit SuccessfulyParsed();
-        return _{{ name.lowerCamelCase }}[0].get{{ name.UpperCamelCase }}();
+        {{#each variables}}
+        {{ name.lowerCamelCase }} = {{ ../name.Plural }}Coder.decode{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}(_{{ ../name.plural }}[0]);
+        {{/each}}
     }
 }
