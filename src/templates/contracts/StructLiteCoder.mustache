@@ -24,11 +24,11 @@ library {{ name.Plural }}Coder {
     {{#unless @first}}
 
     {{/unless}}
-    function decode{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}(bytes32[{{ ../slotsLength }}] _{{ ../name.lowerCamelCase }}) public pure returns({{ type }}) {
+    function decode{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}(bytes32{{#if ../slotsArray}}[{{ ../slotsLength }}]{{/if}} _{{ ../name.lowerCamelCase }}) public pure returns({{ type }}) {
     {{#if isBool}}
-        return (uint256(_{{ ../name.lowerCamelCase }}[{{ slot }}]) & {{ ../name.CONSTANT }}_{{ name.CONSTANT }}_MASK) != 0x0;
+        return (uint256(_{{ ../name.lowerCamelCase }}{{#if ../slotsArray}}[{{ slot }}]{{/if}}) & {{ ../name.CONSTANT }}_{{ name.CONSTANT }}_MASK) != 0x0;
         {{else}}
-        return {{type}}((uint256(_{{ ../name.lowerCamelCase }}[{{ slot }}]) & {{ ../name.CONSTANT }}_{{ name.CONSTANT }}_MASK){{#unless isFirst}} / {{ ../name.CONSTANT }}_{{ name.CONSTANT }}_OFFSET{{/unless}});
+        return {{type}}((uint256(_{{ ../name.lowerCamelCase }}{{#if ../slotsArray}}[{{ slot }}]{{/if}}) & {{ ../name.CONSTANT }}_{{ name.CONSTANT }}_MASK){{#unless isFirst}} / {{ ../name.CONSTANT }}_{{ name.CONSTANT }}_OFFSET{{/unless}});
         {{/if}}
     }
     {{/each}}
@@ -40,18 +40,18 @@ library {{ name.Plural }}Coder {
     {{#unless @first}}
 
     {{/unless}}
-    function encode{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}(bytes32[{{ ../slotsLength }}] _{{ ../name.lowerCamelCase }}, {{ type }} _{{ name.lowerCamelCase }}) public pure returns(bytes32[{{ ../slotsLength }}]) {
+    function encode{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}(bytes32{{#if ../slotsArray}}[{{ ../slotsLength }}]{{/if}} _{{ ../name.lowerCamelCase }}, {{ type }} _{{ name.lowerCamelCase }}) public pure returns(bytes32{{#if ../slotsArray}}[{{ ../slotsLength }}]{{/if}}) {
         {{#if isBool}}
         if (_{{ name.lowerCamelCase }}) {
-            _{{ ../name.lowerCamelCase }}[{{ slot }}] = bytes32(
-                (uint256(_{{ ../name.lowerCamelCase }}[{{ slot }}]) & {{ ../name.CONSTANT }}_{{ name.CONSTANT }}_NEGATIVE_MASK) | {{ ../name.CONSTANT }}_{{ name.CONSTANT }}_MASK
+            _{{ ../name.lowerCamelCase }}{{#if ../slotsArray}}[{{ slot }}]{{/if}} = bytes32(
+                (uint256(_{{ ../name.lowerCamelCase }}{{#if ../slotsArray}}[{{ slot }}]{{/if}}) & {{ ../name.CONSTANT }}_{{ name.CONSTANT }}_NEGATIVE_MASK) | {{ ../name.CONSTANT }}_{{ name.CONSTANT }}_MASK
             );
         } else {
-            _{{ ../name.lowerCamelCase }}[{{ slot }}] = bytes32(uint256(_{{ ../name.lowerCamelCase }}[{{ slot }}]) & {{ ../name.CONSTANT }}_{{ name.CONSTANT }}_NEGATIVE_MASK);
+            _{{ ../name.lowerCamelCase }}{{#if ../slotsArray}}[{{ slot }}]{{/if}} = bytes32(uint256(_{{ ../name.lowerCamelCase }}{{#if ../slotsArray}}[{{ slot }}]{{/if}}) & {{ ../name.CONSTANT }}_{{ name.CONSTANT }}_NEGATIVE_MASK);
         }
         {{else}}
-        _{{ ../name.lowerCamelCase }}[{{ slot }}] = bytes32(
-            (uint256(_{{ ../name.lowerCamelCase }}[{{ slot }}]) & {{ ../name.CONSTANT }}_{{ name.CONSTANT }}_NEGATIVE_MASK) |
+        _{{ ../name.lowerCamelCase }}{{#if ../slotsArray}}[{{ slot }}]{{/if}} = bytes32(
+            (uint256(_{{ ../name.lowerCamelCase }}{{#if ../slotsArray}}[{{ slot }}]{{/if}}) & {{ ../name.CONSTANT }}_{{ name.CONSTANT }}_NEGATIVE_MASK) |
             ((uint256(_{{ name.lowerCamelCase }}){{#unless isFirst}} * {{ ../name.CONSTANT }}_{{ name.CONSTANT }}_OFFSET{{/unless}}) & {{ ../name.CONSTANT }}_{{ name.CONSTANT }}_MASK)
         );
         {{/if}}
@@ -63,16 +63,14 @@ library {{ name.Plural }}Coder {
         {{#each variables}}
         {{ type }} _{{ name.lowerCamelCase }}{{#unless @last}},{{/unless}}
         {{/each}}
-    ) public pure returns(bytes32[{{ slotsLength }}]) {
-        bytes32[{{ slotsLength }}] memory _{{ name.lowerCamelCase }};
+    ) public pure returns(bytes32{{#if slotsArray}}[{{ slotsLength }}]{{/if}} _{{ name.lowerCamelCase }}) {
         {{#each slots}}
-        _{{ ../name.lowerCamelCase }}[{{ @index }}] = encode{{ ../name.UpperCamelCase }}DataSlot{{ @index }}(
+        _{{ ../name.lowerCamelCase }}{{#if ../slotsArray}}[{{ @index }}]{{/if}} = encode{{ ../name.UpperCamelCase }}DataSlot{{ @index }}(
             {{#each this}}
             _{{ name.lowerCamelCase }}{{#unless @last}},{{/unless}}
             {{/each}}
         );
         {{/each}}
-        return _{{ name.lowerCamelCase }};
     }
 
     {{#each slots}}

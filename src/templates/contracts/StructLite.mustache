@@ -69,7 +69,7 @@ import "./{{ name.Plural }}Coder.sol";
 library {{ name.Plural }} {
     // This variable will contain all of the data.
     struct {{ name.UpperCamelCase }} {
-        bytes32[{{ slotsLength }}] data;
+        bytes32{{#if slotsArray}}[{{ slotsLength }}]{{/if}} data;
     }
 
     ////

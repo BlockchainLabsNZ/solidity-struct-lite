@@ -125,6 +125,7 @@ const parseStruct = function(struct) {
     name: calculateName(struct.name),
     variables: variables,
     slots: slots,
+    slotsArray: slots.length > 1,
     slotsLength: _.last(variables).slot + 1
   };
 };

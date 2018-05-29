@@ -4,24 +4,24 @@ import "../../contracts/{{ name.Plural }}Coder.sol";
 
 
 contract {{ name.Plural }}FunctionParametersScenario {
-    function singleStruct(bytes32[{{ slotsLength }}] _{{ name.lowerCamelCase }}Data) public pure returns(
+    function singleStruct(bytes32{{#if slotsArray}}[{{ slotsLength }}]{{/if}} _{{ name.lowerCamelCase }}Data) public pure returns(
         {{#each variables}}
         {{ type }} {{ name.lowerCamelCase }}{{#unless @last}},{{/unless}}
         {{/each}}
     ) {
-        bytes32[{{ slotsLength }}] memory _{{ name.lowerCamelCase }};
+        bytes32{{#if slotsArray}}[{{ slotsLength }}] memory{{/if}} _{{ name.lowerCamelCase }};
         _{{ name.lowerCamelCase }} = _{{ name.lowerCamelCase }}Data;
         {{#each variables}}
         {{ name.lowerCamelCase }} = {{ ../name.Plural }}Coder.decode{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}(_{{ ../name.lowerCamelCase }});
         {{/each}}
     }
 
-    function knownLengthStructArray(bytes32[{{ slotsLength }}][10] _{{ name.lowerCamelCase }}Data) public pure returns(
+    function knownLengthStructArray(bytes32{{#if slotsArray}}[{{ slotsLength }}]{{/if}}[10] _{{ name.lowerCamelCase }}Data) public pure returns(
         {{#each variables}}
         {{ type }} {{ name.lowerCamelCase }}{{#unless @last}},{{/unless}}
         {{/each}}
     ) {
-        bytes32[{{ slotsLength }}][10] memory _{{ name.plural }};
+        bytes32{{#if slotsArray}}[{{ slotsLength }}]{{/if}}[10] memory _{{ name.plural }};
         for (uint i = 0; i < _{{ name.lowerCamelCase }}Data.length; i++) {
             _{{ name.plural }}[i] = _{{ name.lowerCamelCase }}Data[i];
         }
@@ -39,11 +39,11 @@ contract {{ name.Plural }}FunctionParametersScenario {
         {{ type }} {{ name.lowerCamelCase }}{{#unless @last}},{{/unless}}
         {{/each}}
     ) {
-        bytes32[{{ slotsLength }}][] storage _{{ name.plural }};
+        bytes32{{#if slotsArray}}[{{ slotsLength }}]{{/if}}[] storage _{{ name.plural }};
         _{{ name.plural }}.length = _{{ name.lowerCamelCase }}DataSlot0.length;
         for (uint i = 0; i < _{{ name.lowerCamelCase }}DataSlot0.length; i++) {
             {{#each slots}}
-            _{{ ../name.plural }}[i][{{ @index }}] = _{{ ../name.lowerCamelCase }}DataSlot{{ @index }}[i];
+            _{{ ../name.plural }}[i]{{#if ../slotsArray}}[{{ @index }}]{{/if}} = _{{ ../name.lowerCamelCase }}DataSlot{{ @index }}[i];
             {{/each}}
         }
         {{#each variables}}
