@@ -73,7 +73,7 @@ contract("{{ name.Plural }}FunctionParametersScenario", () => {
       {{/each}}
     ] = await {{ name.plural }}FunctionParametersScenario.unknownLengthStructArray.call(
       {{#each slots}}
-      [data[{{@index}}]]{{#unless @last}},{{/unless}}
+      [data{{#if ../slotsArray}}[{{@index}}]{{/if}}]{{#unless @last}},{{/unless}}
       {{/each}}
     );
 
