@@ -4,7 +4,7 @@ const Handlebars = require("handlebars");
 const _ = require("lodash");
 const pluralize = require("pluralize");
 const constants = require("./src/constants.js");
-const { execSync } = require('child_process');
+const { execSync } = require("child_process");
 
 const fetchStructs = function(statement) {
   if (statement.type == "StructDeclaration") {
@@ -71,8 +71,8 @@ const calculateName = function(name) {
     CONSTANT: _.toUpper(snakeName),
     lowerCamelCase: _.camelCase(snakeName),
     UpperCamelCase: _.upperFirst(_.camelCase(snakeName)),
-    lowerSnakeCase: snakeName,
-    UpperSnakeCase: _.upperFirst(snakeName),
+    lower_snake_case: snakeName,
+    Upper_snake_case: _.upperFirst(snakeName),
     Plural: pluralize(_.upperFirst(_.camelCase(snakeName))),
     plural: pluralize(_.camelCase(snakeName))
   };
@@ -148,11 +148,8 @@ function main(filepath) {
   if (!fs.existsSync(BUILD_DIR)) {
     fs.mkdirSync(BUILD_DIR);
   }
-  let out = execSync('truffle init', { cwd: "build/" });
-  const BUILD_DIRS = [
-    "/test/scenarios/",
-    "/test/utils/"
-  ];
+  let out = execSync("truffle init", { cwd: "build/" });
+  const BUILD_DIRS = ["/test/scenarios/", "/test/utils/"];
   BUILD_DIRS.forEach(dirName => {
     if (!fs.existsSync(BUILD_DIR + dirName)) {
       fs.mkdirSync(BUILD_DIR + dirName);
@@ -163,18 +160,19 @@ function main(filepath) {
   const structs = fetchStructs(tree);
   // const structs = require("./test/StructLitePOC.js");
 
+  let migration_counter = 1;
   structs.forEach(struct => {
     struct = parseStruct(struct);
     // All directories in outputPath are relative to the BUILD_DIR
     let templates = [
       // Contracts
       {
-        "path": "./src/templates/contracts/StructLite.mustache",
-        "outputPath": "contracts/" + struct.name.Plural + ".sol"
+        path: "./src/templates/contracts/StructLite.mustache",
+        outputPath: "contracts/" + struct.name.Plural + ".sol"
       },
       {
-        "path": "./src/templates/contracts/StructLiteCoder.mustache",
-        "outputPath": "contracts/" + struct.name.Plural + "Coder.sol"
+        path: "./src/templates/contracts/StructLiteCoder.mustache",
+        outputPath: "contracts/" + struct.name.Plural + "Coder.sol"
       },
       // Mock Contracts
       // {
@@ -183,47 +181,73 @@ function main(filepath) {
       // },
       // Test Scenarios
       {
-        "path": "./src/templates/test/scenarios/FunctionParametersScenario.mustache",
-        "outputPath": "test/scenarios/" + struct.name.Plural + "FunctionParametersScenario.sol"
+        path:
+          "./src/templates/test/scenarios/FunctionParametersScenario.mustache",
+        outputPath:
+          "test/scenarios/" +
+          struct.name.Plural +
+          "FunctionParametersScenario.sol"
       },
       {
-        "path": "./src/templates/test/scenarios/SingleStructScenario.mustache",
-        "outputPath": "test/scenarios/" + struct.name.Plural + "SingleStructScenario.sol"
+        path: "./src/templates/test/scenarios/SingleStructScenario.mustache",
+        outputPath:
+          "test/scenarios/" + struct.name.Plural + "SingleStructScenario.sol"
       },
       {
-        "path": "./src/templates/test/scenarios/StructArrayScenario.mustache",
-        "outputPath": "test/scenarios/" + struct.name.Plural + "StructArrayScenario.sol"
+        path: "./src/templates/test/scenarios/StructArrayScenario.mustache",
+        outputPath:
+          "test/scenarios/" + struct.name.Plural + "StructArrayScenario.sol"
       },
       // Spec files
       {
-        "path": "./src/templates/test/function_parameters_scenario_specs.mustache",
-        "outputPath": "test/function_parameters_scenario_specs.js"
+        path:
+          "./src/templates/test/function_parameters_scenario_specs.mustache",
+        outputPath:
+          "test/" +
+          struct.name.lower_snake_case +
+          "_function_parameters_scenario_specs.js"
       },
       {
-        "path": "./src/templates/test/single_struct_scenario_specs.mustache",
-        "outputPath": "test/single_struct_scenario_specs.js"
+        path: "./src/templates/test/single_struct_scenario_specs.mustache",
+        outputPath:
+          "test/" +
+          struct.name.lower_snake_case +
+          "_single_struct_scenario_specs.js"
       },
       {
-        "path": "./src/templates/test/struct_array_scenario_specs.mustache",
-        "outputPath": "test/struct_array_scenario_specs.js"
+        path: "./src/templates/test/struct_array_scenario_specs.mustache",
+        outputPath:
+          "test/" +
+          struct.name.lower_snake_case +
+          "_struct_array_scenario_specs.js"
       },
       // Utils
       {
-        "path": "./src/templates/test/utils/comparator.mustache",
-        "outputPath": "test/utils/comparator.js"
+        path: "./src/templates/test/utils/comparator.mustache",
+        outputPath: "test/utils/comparator.js"
       },
       {
-        "path": "./src/templates/test/utils/constants.mustache",
-        "outputPath": "test/utils/constants.js"
+        path: "./src/templates/test/utils/constants.mustache",
+        outputPath: "test/utils/constants.js"
       },
       // Migrations
       {
-        "path": "./src/templates/migrations/2_deploy_contracts.mustache",
-        "outputPath": "migrations/2_deploy_contracts.js"
+        path: "./src/templates/migrations/2_deploy_contracts.mustache",
+        outputPath:
+          "migrations/" +
+          ++migration_counter +
+          "_deploy_" +
+          struct.name.lower_snake_case +
+          "_contracts.js"
       },
       {
-        "path": "./src/templates/migrations/3_deploy_scenarios.mustache",
-        "outputPath": "migrations/3_deploy_scenarios.js"
+        path: "./src/templates/migrations/3_deploy_scenarios.mustache",
+        outputPath:
+          "migrations/" +
+          ++migration_counter +
+          "_deploy_" +
+          struct.name.lower_snake_case +
+          "_scenarios.js"
       }
     ];
 
@@ -231,13 +255,12 @@ function main(filepath) {
       let library = getCompiledLibrary(tplData["path"]);
       let output = library(struct);
       let filename = filepath.replace(/^.*[\\\/]/, "");
-      fs.writeFile(BUILD_DIR + tplData['outputPath'], output, function(err) {
+      fs.writeFile(BUILD_DIR + tplData["outputPath"], output, function(err) {
         if (err) {
           return console.log(err);
         }
-        console.log(BUILD_DIR + tplData['outputPath'] + " created");
+        console.log(BUILD_DIR + tplData["outputPath"] + " created");
       });
     });
-
   });
 }
