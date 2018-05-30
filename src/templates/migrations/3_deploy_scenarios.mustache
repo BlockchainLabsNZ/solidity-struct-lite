@@ -18,7 +18,6 @@ module.exports = function(deployer, network) {
         await deployer.deploy({{ name.Plural }}SingleStructScenario);
         await deployer.deploy({{ name.Plural }}StructArrayScenario);
         await deployer.deploy({{ name.Plural }}Mock);
-        await deployer.link({{ name.Plural }}Mock, {{ name.Plural }}MockSingleStructScenario);
         await deployer.deploy({{ name.Plural }}MockSingleStructScenario);
     });
 };

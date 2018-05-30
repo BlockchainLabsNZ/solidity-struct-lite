@@ -1,30 +1,30 @@
 pragma solidity 0.4.24;
 
-import "./{{ name.Plural }}Mock.sol";
-
 
 contract {{ name.Plural }}MockSingleStructScenario {
-    using {{ name.Plural }}Mock for {{ name.Plural }}Mock.{{ name.UpperCamelCase }};
+    struct {{ name.UpperCamelCase }} {
+        {{#each variables}}
+        {{ type }} {{ name.lowerCamelCase }};
+        {{/each}}
+    }
 
-    {{ name.Plural }}Mock.{{ name.UpperCamelCase }} private {{ name.lowerCamelCase }};
+    {{ name.UpperCamelCase }} public {{ name.lowerCamelCase }};
 
     function write{{ name.UpperCamelCase }}(
         {{#each variables}}
         {{ type }} _{{ name.lowerCamelCase }}{{#unless @last}},{{/unless}}
         {{/each}}
     ) public {
-        {{ name.lowerCamelCase }}.set{{ name.UpperCamelCase }}(
-            {{#each variables}}
-            _{{ name.lowerCamelCase }}{{#unless @last}},{{/unless}}
-            {{/each}}
-        );
+        {{#each variables}}
+        {{ ../name.lowerCamelCase }}.{{ name.lowerCamelCase }} = _{{ name.lowerCamelCase }};
+        {{/each}}
     }
 
     {{#each variables}}
     function write{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}(
         {{ type }} _{{ name.lowerCamelCase }}
     ) public {
-        {{ ../name.lowerCamelCase }}.set{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}(_{{ name.lowerCamelCase }});
+        {{ ../name.lowerCamelCase }}.{{ name.lowerCamelCase }} = _{{ name.lowerCamelCase }};
     }
     {{/each}}
 
@@ -33,12 +33,16 @@ contract {{ name.Plural }}MockSingleStructScenario {
         {{ type }}{{#unless @last}},{{/unless}}
         {{/each}}
     ) {
-        return {{ name.lowerCamelCase }}.get{{ name.UpperCamelCase }}();
+        return (
+            {{#each variables}}
+            {{ ../name.lowerCamelCase }}.{{ name.lowerCamelCase }}{{#unless @last}},{{/unless}}
+            {{/each}}
+        );
     }
 
     {{#each variables}}
     function read{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}() public view returns({{ type }}) {
-        return {{ ../name.lowerCamelCase }}.get{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}();
+        return {{ ../name.lowerCamelCase }}.{{ name.lowerCamelCase }};
     }
     {{/each}}
 }
