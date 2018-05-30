@@ -247,6 +247,14 @@ function main(filepath) {
         outputPath: "test/mocks/" + struct.name.Plural + "Mock.sol"
       },
       {
+        path:
+          "./src/templates/test/mocks/MockFunctionParametersScenario.mustache",
+        outputPath:
+          "test/mocks/" +
+          struct.name.Plural +
+          "MockFunctionParametersScenario.sol"
+      },
+      {
         path: "./src/templates/test/mocks/MockSingleStructScenario.mustache",
         outputPath:
           "test/mocks/" + struct.name.Plural + "MockSingleStructScenario.sol"
@@ -257,23 +265,26 @@ function main(filepath) {
           "test/mocks/" + struct.name.Plural + "MockStructArrayScenario.sol"
       },
       {
-        path: "./src/templates/test/mocks/MockSingleStructScenario.mustache",
+        path:
+          "./src/templates/test/mock_function_parameters_scenario_specs.mustache",
         outputPath:
-          "test/mocks/" + struct.name.Plural + "MockSingleStructScenario.sol"
+          "test/mock_" +
+          struct.name.lower_snake_case +
+          "_function_parameters_scenario_specs.js"
       },
       {
         path: "./src/templates/test/mock_single_struct_scenario_specs.mustache",
         outputPath:
-          "test/" +
+          "test/mock_" +
           struct.name.lower_snake_case +
-          "_mock_single_struct_scenario_specs.js"
+          "_single_struct_scenario_specs.js"
       },
       {
         path: "./src/templates/test/mock_struct_array_scenario_specs.mustache",
         outputPath:
-          "test/" +
+          "test/mock_" +
           struct.name.lower_snake_case +
-          "_mock_struct_array_scenario_specs.js"
+          "_struct_array_scenario_specs.js"
       },
       // Utils
       {
