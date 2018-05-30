@@ -1,9 +1,12 @@
 pragma solidity 0.4.24;
 
+
 ////
-// This Mock provides a simi
+// This Mock provides the same API as {{ name.Plural }} but uses the normal
+// Solidity structure approach.
+// This file was created to roughly compare gas usage in different scenarios.
 ////
-library {{ name.Plural }}Original {
+library {{ name.Plural }}Mock {
     struct {{ name.UpperCamelCase }} {
         {{#each variables}}
         {{ type }} {{ name.lowerCamelCase }};

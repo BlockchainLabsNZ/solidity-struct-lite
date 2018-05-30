@@ -1,0 +1,45 @@
+const constants = require("./utils/constants");
+
+const {{ name.Plural }}MockSingleStructScenario = artifacts.require("{{ name.Plural }}MockSingleStructScenario");
+
+contract("{{ name.Plural }}MockSingleStructScenario", () => {
+  it("Should Write and Read all of the variables in a bytes32[]", async () => {
+    let {{ name.plural }}MockSingleStructScenario = await {{ name.Plural }}MockSingleStructScenario.deployed();
+    console.log(
+      "{{ name.UpperCamelCase }} Writting Full Struct",
+      await {{ name.plural }}MockSingleStructScenario.write{{ name.UpperCamelCase }}.estimateGas(
+        {{#each variables}}
+        constants["{{ type }}"]{{#unless @last}},{{/unless}}
+        {{/each}}
+      )
+    );
+    await {{ name.plural }}MockSingleStructScenario.write{{ name.UpperCamelCase }}(
+      {{#each variables}}
+      constants["{{ type }}"]{{#unless @last}},{{/unless}}
+      {{/each}}
+    );
+    console.log(
+      "{{ name.UpperCamelCase }} Reading Full Struct",
+      await {{ name.plural }}MockSingleStructScenario.read{{ name.UpperCamelCase }}.estimateGas()
+    );
+  });
+  {{#each variables}}
+
+  it("Should Write and Read one {{ name.lowerCamelCase }}", async () => {
+    let {{ ../name.plural }}MockSingleStructScenario = await {{ ../name.Plural }}MockSingleStructScenario.deployed();
+    console.log(
+      "{{ ../name.UpperCamelCase }} Writting Variable {{ name.UpperCamelCase }}",
+      await {{ ../name.plural }}MockSingleStructScenario.write{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}.estimateGas(
+        constants["{{ type }}"]
+      )
+    );
+    await {{ ../name.plural }}MockSingleStructScenario.write{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}(
+      constants["{{ type }}"]
+    );
+    console.log(
+      "{{ ../name.UpperCamelCase }} Reading Variable {{ name.UpperCamelCase }}",
+      await {{ ../name.plural }}MockSingleStructScenario.read{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}.estimateGas()
+    );
+  });
+  {{/each}}
+});

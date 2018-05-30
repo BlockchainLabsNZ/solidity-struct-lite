@@ -1,0 +1,44 @@
+pragma solidity 0.4.24;
+
+import "./{{ name.Plural }}Mock.sol";
+
+
+contract {{ name.Plural }}MockSingleStructScenario {
+    using {{ name.Plural }}Mock for {{ name.Plural }}Mock.{{ name.UpperCamelCase }};
+
+    {{ name.Plural }}Mock.{{ name.UpperCamelCase }} private {{ name.lowerCamelCase }};
+
+    function write{{ name.UpperCamelCase }}(
+        {{#each variables}}
+        {{ type }} _{{ name.lowerCamelCase }}{{#unless @last}},{{/unless}}
+        {{/each}}
+    ) public {
+        {{ name.lowerCamelCase }}.set{{ name.UpperCamelCase }}(
+            {{#each variables}}
+            _{{ name.lowerCamelCase }}{{#unless @last}},{{/unless}}
+            {{/each}}
+        );
+    }
+
+    {{#each variables}}
+    function write{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}(
+        {{ type }} _{{ name.lowerCamelCase }}
+    ) public {
+        {{ ../name.lowerCamelCase }}.set{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}(_{{ name.lowerCamelCase }});
+    }
+    {{/each}}
+
+    function read{{ name.UpperCamelCase }}() public view returns(
+        {{#each variables}}
+        {{ type }}{{#unless @last}},{{/unless}}
+        {{/each}}
+    ) {
+        return {{ name.lowerCamelCase }}.get{{ name.UpperCamelCase }}();
+    }
+
+    {{#each variables}}
+    function read{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}() public view returns({{ type }}) {
+        return {{ ../name.lowerCamelCase }}.get{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}();
+    }
+    {{/each}}
+}
