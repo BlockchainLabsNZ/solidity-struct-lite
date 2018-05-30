@@ -4,30 +4,45 @@ import "../../contracts/{{ name.Plural }}Coder.sol";
 
 
 contract {{ name.Plural }}FunctionParametersScenario {
+    {{#each variables}}
+    {{ type }}[] private unknownLenght{{ name.UpperCamelCase }};
+    {{/each}}
+
     function singleStruct(bytes32{{#if slotsArray}}[{{ slotsLength }}]{{/if}} _{{ name.lowerCamelCase }}Data) public pure returns(
         {{#each variables}}
-        {{ type }} {{ name.lowerCamelCase }}{{#unless @last}},{{/unless}}
+        {{ type }}{{#unless @last}},{{/unless}}
         {{/each}}
     ) {
-        bytes32{{#if slotsArray}}[{{ slotsLength }}] memory{{/if}} _{{ name.lowerCamelCase }};
-        _{{ name.lowerCamelCase }} = _{{ name.lowerCamelCase }}Data;
         {{#each variables}}
-        {{ name.lowerCamelCase }} = {{ ../name.Plural }}Coder.decode{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}(_{{ ../name.lowerCamelCase }});
+        {{ type }} {{ name.lowerCamelCase }} = {{ ../name.Plural }}Coder.decode{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}(_{{ ../name.lowerCamelCase }}Data);
         {{/each}}
+        return (
+            {{#each variables}}
+            {{ name.lowerCamelCase }}{{#unless @last}},{{/unless}}
+            {{/each}}
+        );
     }
 
     function knownLengthStructArray(bytes32{{#if slotsArray}}[{{ slotsLength }}]{{/if}}[10] _{{ name.lowerCamelCase }}Data) public pure returns(
         {{#each variables}}
-        {{ type }} {{ name.lowerCamelCase }}{{#unless @last}},{{/unless}}
+        {{ type }}{{#unless @last}},{{/unless}}
         {{/each}}
     ) {
-        bytes32{{#if slotsArray}}[{{ slotsLength }}]{{/if}}[10] memory _{{ name.plural }};
-        for (uint i = 0; i < _{{ name.lowerCamelCase }}Data.length; i++) {
-            _{{ name.plural }}[i] = _{{ name.lowerCamelCase }}Data[i];
-        }
         {{#each variables}}
-        {{ name.lowerCamelCase }} = {{ ../name.Plural }}Coder.decode{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}(_{{ ../name.plural }}[0]);
+        {{ type }}[10] memory _{{ name.lowerCamelCase }};
         {{/each}}
+
+        for (uint256 i = 0; i < 10; i++) {
+            {{#each variables}}
+            _{{ name.lowerCamelCase }}[i] = {{ ../name.Plural }}Coder.decode{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}(_{{ ../name.lowerCamelCase }}Data[i]);
+            {{/each}}
+        }
+
+        return (
+            {{#each variables}}
+            _{{ name.lowerCamelCase }}[0]{{#unless @last}},{{/unless}}
+            {{/each}}
+        );
     }
 
     function unknownLengthStructArray(
@@ -36,18 +51,28 @@ contract {{ name.Plural }}FunctionParametersScenario {
         {{/each}}
     ) public returns(
         {{#each variables}}
-        {{ type }} {{ name.lowerCamelCase }}{{#unless @last}},{{/unless}}
+        {{ type }}{{#unless @last}},{{/unless}}
         {{/each}}
     ) {
-        bytes32{{#if slotsArray}}[{{ slotsLength }}]{{/if}}[] storage _{{ name.plural }};
-        _{{ name.plural }}.length = _{{ name.lowerCamelCase }}DataSlot0.length;
+        bytes32{{#if slotsArray}}[{{ slotsLength }}] memory{{/if}} _{{ name.lowerCamelCase }};
+
+        {{#each variables}}
+        unknownLenght{{ name.UpperCamelCase }}.length = _{{ ../name.lowerCamelCase }}DataSlot0.length;
+        {{/each}}
+
         for (uint i = 0; i < _{{ name.lowerCamelCase }}DataSlot0.length; i++) {
             {{#each slots}}
-            _{{ ../name.plural }}[i]{{#if ../slotsArray}}[{{ @index }}]{{/if}} = _{{ ../name.lowerCamelCase }}DataSlot{{ @index }}[i];
+            _{{ ../name.lowerCamelCase }}{{#if ../slotsArray}}[{{ @index }}]{{/if}} = _{{ ../name.lowerCamelCase }}DataSlot{{ @index }}[i];
+            {{/each}}
+            {{#each variables}}
+            unknownLenght{{ name.UpperCamelCase }}[i] = {{ ../name.Plural }}Coder.decode{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}(_{{ ../name.lowerCamelCase }});
             {{/each}}
         }
-        {{#each variables}}
-        {{ name.lowerCamelCase }} = {{ ../name.Plural }}Coder.decode{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}(_{{ ../name.plural }}[0]);
-        {{/each}}
+
+        return (
+            {{#each variables}}
+            unknownLenght{{ name.UpperCamelCase }}[0]{{#unless @last}},{{/unless}}
+            {{/each}}
+        );
     }
 }

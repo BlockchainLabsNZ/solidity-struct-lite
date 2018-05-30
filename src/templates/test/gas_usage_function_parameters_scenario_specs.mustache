@@ -1,0 +1,68 @@
+const constants = require("./utils/constants");
+
+const {{ name.Plural }}Coder = artifacts.require("{{ name.Plural }}Coder");
+const {{ name.Plural }}FunctionParametersScenario = artifacts.require("{{ name.Plural }}FunctionParametersScenario");
+
+contract("{{ name.Plural }}FunctionParametersScenario", () => {
+  it("Should recieve a bytes32[] as an argument", async () => {
+    let {{ name.plural }}Coder = await {{ name.Plural }}Coder.deployed();
+    let {{ name.plural }}FunctionParametersScenario = await {{ name.Plural }}FunctionParametersScenario.deployed();
+
+    console.log(
+      "{{ name.UpperCamelCase }} Encode Struct",
+      await {{ name.plural }}Coder.encode{{ name.UpperCamelCase }}.estimateGas(
+        {{#each variables}}
+        constants["{{ type }}"]{{#unless @last}},{{/unless}}
+        {{/each}}
+      )
+    );
+
+    let data = await {{ name.plural }}Coder.encode{{ name.UpperCamelCase }}.call(
+      {{#each variables}}
+      constants["{{ type }}"]{{#unless @last}},{{/unless}}
+      {{/each}}
+    );
+    console.log(
+      "{{ name.UpperCamelCase }} Single Struct Sent",
+      await {{ name.plural }}FunctionParametersScenario.singleStruct.estimateGas(data)
+    );
+  });
+
+  it("Should recieve a bytes32[][] with a fixed length of 10 as an argument", async () => {
+    let {{ name.plural }}Coder = await {{ name.Plural }}Coder.deployed();
+    let {{ name.plural }}FunctionParametersScenario = await {{ name.Plural }}FunctionParametersScenario.deployed();
+
+    let data = await {{ name.plural }}Coder.encode{{ name.UpperCamelCase }}.call(
+      {{#each variables}}
+      constants["{{ type }}"]{{#unless @last}},{{/unless}}
+      {{/each}}
+    );
+
+    console.log(
+      "{{ name.UpperCamelCase }} Fixed Size Array",
+      await {{ name.plural }}FunctionParametersScenario.knownLengthStructArray.estimateGas(
+        [data, data, data, data, data, data, data, data, data, data]
+      )
+    );
+  });
+
+  it("Should recieve a bytes32[] with an unknown length as an argument", async () => {
+    let {{ name.plural }}Coder = await {{ name.Plural }}Coder.deployed();
+    let {{ name.plural }}FunctionParametersScenario = await {{ name.Plural }}FunctionParametersScenario.deployed();
+
+    let data = await {{ name.plural }}Coder.encode{{ name.UpperCamelCase }}.call(
+      {{#each variables}}
+      constants["{{ type }}"]{{#unless @last}},{{/unless}}
+      {{/each}}
+    );
+
+    console.log(
+      "{{ name.UpperCamelCase }} Variable Size Array",
+        await {{ name.plural }}FunctionParametersScenario.unknownLengthStructArray.estimateGas(
+        {{#each slots}}
+        [data{{#if ../slotsArray}}[{{@index}}]{{/if}}]{{#unless @last}},{{/unless}}
+        {{/each}}
+      )
+    );
+  });
+});

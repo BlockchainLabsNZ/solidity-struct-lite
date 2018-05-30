@@ -217,14 +217,14 @@ function main(filepath) {
           "_struct_array_scenario_specs.js"
       },
       // Gas
-      // {
-      //   path:
-      //     "./src/templates/test/function_parameters_scenario_specs.mustache",
-      //   outputPath:
-      //     "test/" +
-      //     struct.name.lower_snake_case +
-      //     "_function_parameters_scenario_specs.js"
-      // },
+      {
+        path:
+          "./src/templates/test/gas_usage_function_parameters_scenario_specs.mustache",
+        outputPath:
+          "test/gas_usage_" +
+          struct.name.lower_snake_case +
+          "_function_parameters_scenario_specs.js"
+      },
       {
         path:
           "./src/templates/test/gas_usage_single_struct_scenario_specs.mustache",
