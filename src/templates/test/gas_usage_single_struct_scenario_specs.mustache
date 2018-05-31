@@ -6,7 +6,7 @@ contract("{{ name.Plural }}SingleStructScenario", () => {
   it("Should Write and Read all of the variables in a bytes32[]", async () => {
     let {{ name.plural }}SingleStructScenario = await {{ name.Plural }}SingleStructScenario.deployed();
     console.log(
-      "{{ name.UpperCamelCase }} Writting Full Struct",
+      "{{ name.UpperCamelCase }} Writing Full Struct",
       await {{ name.plural }}SingleStructScenario.write{{ name.UpperCamelCase }}.estimateGas(
         {{#each variables}}
         constants["{{ type }}"]{{#unless @last}},{{/unless}}
@@ -28,7 +28,7 @@ contract("{{ name.Plural }}SingleStructScenario", () => {
   it("Should Write and Read one {{ name.lowerCamelCase }}", async () => {
     let {{ ../name.plural }}SingleStructScenario = await {{ ../name.Plural }}SingleStructScenario.deployed();
     console.log(
-      "{{ ../name.UpperCamelCase }} Writting Variable {{ name.UpperCamelCase }}",
+      "{{ ../name.UpperCamelCase }} Writing Variable {{ name.UpperCamelCase }}",
       await {{ ../name.plural }}SingleStructScenario.write{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}.estimateGas(
         constants["{{ type }}"]
       )
