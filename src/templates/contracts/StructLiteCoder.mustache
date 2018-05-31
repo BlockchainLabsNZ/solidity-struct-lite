@@ -1,7 +1,7 @@
 pragma solidity 0.4.24;
 
 
-library {{ name.Plural }}Coder {
+{{#if isContract}}contract{{else}}library{{/if}} {{ name.Plural }}Coder{{#if isContract}}Contract{{/if}} {
     ////
     // Variable Declarations
     ////

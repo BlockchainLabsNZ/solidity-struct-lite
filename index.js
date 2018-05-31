@@ -316,7 +316,7 @@ function main(filepath) {
       }
     ];
 
-    templates.forEach(function processTemplate(tplData) {
+    function processTemplate(tplData) {
       let library = getCompiledLibrary(tplData["path"]);
       let output = library(struct);
       let filename = filepath.replace(/^.*[\\\/]/, "");
@@ -326,6 +326,14 @@ function main(filepath) {
         }
         console.log(BUILD_DIR + tplData["outputPath"] + " created");
       });
+    }
+
+    templates.forEach(processTemplate);
+
+    struct.isContract = true;
+    processTemplate({
+      path: "./src/templates/contracts/StructLiteCoder.mustache",
+      outputPath: "contracts/" + struct.name.Plural + "CoderContract.sol"
     });
   });
 }
