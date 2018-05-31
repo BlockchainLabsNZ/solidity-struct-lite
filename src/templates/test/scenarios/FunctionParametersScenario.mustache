@@ -1,9 +1,9 @@
 pragma solidity 0.4.24;
 
-import "../../contracts/{{ name.Plural }}Coder.sol";
+import "../../contracts/{{ name.Plural }}CoderContract.sol";
 
 
-contract {{ name.Plural }}FunctionParametersScenario {
+contract {{ name.Plural }}FunctionParametersScenario is {{ name.Plural }}CoderContract {
     {{#each variables}}
     {{ type }}[] private unknownLenght{{ name.UpperCamelCase }};
     {{/each}}
@@ -14,7 +14,7 @@ contract {{ name.Plural }}FunctionParametersScenario {
         {{/each}}
     ) {
         {{#each variables}}
-        {{ type }} {{ name.lowerCamelCase }} = {{ ../name.Plural }}Coder.decode{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}(_{{ ../name.lowerCamelCase }}Data);
+        {{ type }} {{ name.lowerCamelCase }} = decode{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}(_{{ ../name.lowerCamelCase }}Data);
         {{/each}}
         return (
             {{#each variables}}
@@ -34,7 +34,7 @@ contract {{ name.Plural }}FunctionParametersScenario {
 
         for (uint256 i = 0; i < 10; i++) {
             {{#each variables}}
-            _{{ name.lowerCamelCase }}[i] = {{ ../name.Plural }}Coder.decode{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}(_{{ ../name.lowerCamelCase }}Data[i]);
+            _{{ name.lowerCamelCase }}[i] = decode{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}(_{{ ../name.lowerCamelCase }}Data[i]);
             {{/each}}
         }
 
@@ -65,7 +65,7 @@ contract {{ name.Plural }}FunctionParametersScenario {
             _{{ ../name.lowerCamelCase }}{{#if ../slotsArray}}[{{ @index }}]{{/if}} = _{{ ../name.lowerCamelCase }}DataSlot{{ @index }}[i];
             {{/each}}
             {{#each variables}}
-            unknownLenght{{ name.UpperCamelCase }}[i] = {{ ../name.Plural }}Coder.decode{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}(_{{ ../name.lowerCamelCase }});
+            unknownLenght{{ name.UpperCamelCase }}[i] = decode{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}(_{{ ../name.lowerCamelCase }});
             {{/each}}
         }
 
