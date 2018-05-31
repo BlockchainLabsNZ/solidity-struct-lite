@@ -91,7 +91,7 @@ pragma solidity 0.4.24;
         {{/each}}
         return bytes32(
             {{#each this}}
-            ((standard{{ name.UpperCamelCase }}{{#unless isFirst}} * {{ ../../name.CONSTANT }}_{{ name.CONSTANT }}_OFFSET{{/unless}}) & {{ ../../name.CONSTANT }}_{{ name.CONSTANT }}_MASK){{#unless @last}} |{{/unless}}
+            ((standard{{ name.UpperCamelCase }}{{#unless isBool}}{{#unless isFirst}} * {{ ../../name.CONSTANT }}_{{ name.CONSTANT }}_OFFSET{{/unless}}{{/unless}}) & {{ ../../name.CONSTANT }}_{{ name.CONSTANT }}_MASK){{#unless @last}} |{{/unless}}
             {{/each}}
         );
     }
