@@ -1,0 +1,55 @@
+const constants = require("./utils/constants");
+
+const {{ name.Plural }}MockFunctionParametersScenario = artifacts.require("{{ name.Plural }}MockFunctionParametersScenario");
+
+contract("{{ name.Plural }}MockFunctionParametersScenario", () => {
+  it("Should recieve a bytes32[] as an argument", async () => {
+    let {{ name.plural }}MockFunctionParametersScenario = await {{ name.Plural }}MockFunctionParametersScenario.deployed();
+
+    console.log(
+      "{{ name.UpperCamelCase }} Single Struct Sent",
+      await {{ name.plural }}MockFunctionParametersScenario.singleStruct.estimateGas(
+        {{#each variables}}
+        constants["{{ type }}"]{{#unless @last}},{{/unless}}
+        {{/each}}
+      )
+    );
+  });
+
+  it("Should recieve a bytes32[][] with a fixed length of 10 as an argument", async () => {
+    let {{ name.plural }}MockFunctionParametersScenario = await {{ name.Plural }}MockFunctionParametersScenario.deployed();
+
+    console.log(
+      "{{ name.UpperCamelCase }} Fixed Size Array",
+      await {{ name.plural }}MockFunctionParametersScenario.knownLengthStructArray.estimateGas(
+        {{#each variables}}
+        [
+          constants["{{ type }}"],
+          constants["{{ type }}"],
+          constants["{{ type }}"],
+          constants["{{ type }}"],
+          constants["{{ type }}"],
+          constants["{{ type }}"],
+          constants["{{ type }}"],
+          constants["{{ type }}"],
+          constants["{{ type }}"],
+          constants["{{ type }}"]
+        ]{{#unless @last}},{{/unless}}
+        {{/each}}
+      )
+    );
+  });
+
+  it("Should recieve a bytes32[] with an unknown length as an argument", async () => {
+    let {{ name.plural }}MockFunctionParametersScenario = await {{ name.Plural }}MockFunctionParametersScenario.deployed();
+
+    console.log(
+      "{{ name.UpperCamelCase }} Variable Size Array",
+      await {{ name.plural }}MockFunctionParametersScenario.unknownLengthStructArray.estimateGas(
+        {{#each variables}}
+        [constants["{{ type }}"]]{{#unless @last}},{{/unless}}
+        {{/each}}
+      )
+    );
+  });
+});

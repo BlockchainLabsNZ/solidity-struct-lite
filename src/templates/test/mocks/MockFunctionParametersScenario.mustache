@@ -1,0 +1,82 @@
+pragma solidity 0.4.24;
+
+
+contract {{ name.Plural }}MockFunctionParametersScenario {
+    {{#each variables}}
+    {{ type }}[] private unknownLenght{{ name.UpperCamelCase }};
+    {{/each}}
+
+    function singleStruct(
+        {{#each variables}}
+        {{ type }} _{{ name.lowerCamelCase }}{{#unless @last}},{{/unless}}
+        {{/each}}
+    ) public pure returns(
+        {{#each variables}}
+        {{ type }}{{#unless @last}},{{/unless}}
+        {{/each}}
+    ) {
+        {{#each variables}}
+        {{ type }} {{ name.lowerCamelCase }} = _{{ name.lowerCamelCase }};
+        {{/each}}
+        return (
+            {{#each variables}}
+            {{ name.lowerCamelCase }}{{#unless @last}},{{/unless}}
+            {{/each}}
+        );
+    }
+
+    function knownLengthStructArray(
+        {{#each variables}}
+        {{ type }}[10] _{{ name.lowerCamelCase }}{{#unless @last}},{{/unless}}
+        {{/each}}
+    ) public pure returns(
+        {{#each variables}}
+        {{ type }}{{#unless @last}},{{/unless}}
+        {{/each}}
+    ) {
+        {{#each variables}}
+        {{ type }}[10] memory {{ name.lowerCamelCase }};
+        {{/each}}
+
+        for (uint256 i = 0; i < 10; i++) {
+            {{#each variables}}
+            {{ name.lowerCamelCase }}[i] = _{{ name.lowerCamelCase }}[i];
+            {{/each}}
+        }
+
+        return (
+            {{#each variables}}
+            {{ name.lowerCamelCase }}[0]{{#unless @last}},{{/unless}}
+            {{/each}}
+        );
+    }
+
+    function unknownLengthStructArray(
+        {{#each variables}}
+        {{ type }}[] _{{ name.lowerCamelCase }}{{#unless @last}},{{/unless}}
+        {{/each}}
+    ) public returns(
+        {{#each variables}}
+        {{ type }}{{#unless @last}},{{/unless}}
+        {{/each}}
+    ) {
+        {{#each variables}}
+        {{#if @first}}
+        uint256 length = _{{ name.lowerCamelCase }}.length;
+        {{/if}}
+        unknownLenght{{ name.UpperCamelCase }}.length = length;
+        {{/each}}
+
+        for (uint i = 0; i < length; i++) {
+            {{#each variables}}
+            unknownLenght{{ name.UpperCamelCase }}[i] = _{{ name.lowerCamelCase }}[i];
+            {{/each}}
+        }
+
+        return (
+            {{#each variables}}
+            unknownLenght{{ name.UpperCamelCase }}[0]{{#unless @last}},{{/unless}}
+            {{/each}}
+        );
+    }
+}

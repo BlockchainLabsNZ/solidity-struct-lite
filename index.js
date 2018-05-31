@@ -149,7 +149,7 @@ function main(filepath) {
     fs.mkdirSync(BUILD_DIR);
   }
   let out = execSync("truffle init", { cwd: "build/" });
-  const BUILD_DIRS = ["/test/scenarios/", "/test/utils/"];
+  const BUILD_DIRS = ["/test/scenarios/", "/test/utils/", "/test/mocks/"];
   BUILD_DIRS.forEach(dirName => {
     if (!fs.existsSync(BUILD_DIR + dirName)) {
       fs.mkdirSync(BUILD_DIR + dirName);
@@ -174,11 +174,6 @@ function main(filepath) {
         path: "./src/templates/contracts/StructLiteCoder.mustache",
         outputPath: "contracts/" + struct.name.Plural + "Coder.sol"
       },
-      // Mock Contracts
-      // {
-      //   "path": "./src/templates/test/mocks/StructLiteMock.mustache",
-      //   "outputPath": "test/mocks/" + struct.name.UpperCamelCase + ".sol"
-      // },
       // Test Scenarios
       {
         path:
@@ -218,6 +213,76 @@ function main(filepath) {
         path: "./src/templates/test/struct_array_scenario_specs.mustache",
         outputPath:
           "test/" +
+          struct.name.lower_snake_case +
+          "_struct_array_scenario_specs.js"
+      },
+      // Gas
+      {
+        path:
+          "./src/templates/test/gas_usage_function_parameters_scenario_specs.mustache",
+        outputPath:
+          "test/gas_usage_" +
+          struct.name.lower_snake_case +
+          "_function_parameters_scenario_specs.js"
+      },
+      {
+        path:
+          "./src/templates/test/gas_usage_single_struct_scenario_specs.mustache",
+        outputPath:
+          "test/gas_usage_" +
+          struct.name.lower_snake_case +
+          "_single_struct_scenario_specs.js"
+      },
+      {
+        path:
+          "./src/templates/test/gas_usage_struct_array_scenario_specs.mustache",
+        outputPath:
+          "test/gas_usage_" +
+          struct.name.lower_snake_case +
+          "_struct_array_scenario_specs.js"
+      },
+      // Mock Contracts
+      {
+        path: "./src/templates/test/mocks/StructLiteMock.mustache",
+        outputPath: "test/mocks/" + struct.name.Plural + "Mock.sol"
+      },
+      {
+        path:
+          "./src/templates/test/mocks/MockFunctionParametersScenario.mustache",
+        outputPath:
+          "test/mocks/" +
+          struct.name.Plural +
+          "MockFunctionParametersScenario.sol"
+      },
+      {
+        path: "./src/templates/test/mocks/MockSingleStructScenario.mustache",
+        outputPath:
+          "test/mocks/" + struct.name.Plural + "MockSingleStructScenario.sol"
+      },
+      {
+        path: "./src/templates/test/mocks/MockStructArrayScenario.mustache",
+        outputPath:
+          "test/mocks/" + struct.name.Plural + "MockStructArrayScenario.sol"
+      },
+      {
+        path:
+          "./src/templates/test/mock_function_parameters_scenario_specs.mustache",
+        outputPath:
+          "test/mock_" +
+          struct.name.lower_snake_case +
+          "_function_parameters_scenario_specs.js"
+      },
+      {
+        path: "./src/templates/test/mock_single_struct_scenario_specs.mustache",
+        outputPath:
+          "test/mock_" +
+          struct.name.lower_snake_case +
+          "_single_struct_scenario_specs.js"
+      },
+      {
+        path: "./src/templates/test/mock_struct_array_scenario_specs.mustache",
+        outputPath:
+          "test/mock_" +
           struct.name.lower_snake_case +
           "_struct_array_scenario_specs.js"
       },

@@ -1,0 +1,55 @@
+const constants = require("./utils/constants");
+
+const {{ name.Plural }}StructArrayScenario = artifacts.require('{{ name.Plural }}StructArrayScenario');
+
+contract('{{ name.Plural }}StructArrayScenario', () => {
+  it('Should Write and Read all of the variables in a bytes32[] in a new index', async () => {
+    let {{ name.plural }}StructArrayScenario = await {{ name.Plural }}StructArrayScenario.deployed();
+    {{#each variables}}
+    let {{ ../name.lowerCamelCase }}{{ name.UpperCamelCase }};
+    {{/each}}
+
+    console.log(
+      "{{ name.UpperCamelCase }} Writing Full Struct in a new index",
+      await {{ name.plural }}StructArrayScenario.write{{ name.UpperCamelCase }}.estimateGas(
+        0,
+        {{#each variables}}
+        constants["{{ type }}"]{{#unless @last}},{{/unless}}
+        {{/each}}
+      )
+    );
+    await {{ name.plural }}StructArrayScenario.write{{ name.UpperCamelCase }}(
+      0,
+      {{#each variables}}
+      constants["{{ type }}"]{{#unless @last}},{{/unless}}
+      {{/each}}
+    );
+    console.log(
+      "{{ name.UpperCamelCase }} Writing Full Struct in a new index",
+      await {{ name.plural }}StructArrayScenario.read{{ name.UpperCamelCase }}.estimateGas(0)
+    );
+  });
+  {{#each variables}}
+
+  it('Should Write and Read one {{ name.lowerCamelCase }}', async () => {
+    let {{ ../name.plural }}StructArrayScenario = await {{ ../name.Plural }}StructArrayScenario.deployed();
+    let {{ ../name.lowerCamelCase }}{{ name.UpperCamelCase }};
+
+    console.log(
+      "{{ ../name.UpperCamelCase }} Writing Variable {{ name.UpperCamelCase }} on a new index",
+      await {{ ../name.plural }}StructArrayScenario.write{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}.estimateGas(
+        1,
+        constants["{{ type }}"]{{#unless @last}},{{/unless}}
+      )
+    );
+    await {{ ../name.plural }}StructArrayScenario.write{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}(
+      1,
+      constants["{{ type }}"]{{#unless @last}},{{/unless}}
+    )
+    console.log(
+      "{{ ../name.UpperCamelCase }} Reading Variable {{ name.UpperCamelCase }} on a new index",
+      await {{ ../name.plural }}StructArrayScenario.read{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}.estimateGas(1)
+    );
+  });
+  {{/each}}
+});

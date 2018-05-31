@@ -3,6 +3,9 @@ var {{ name.Plural }} = artifacts.require('{{ name.Plural }}');
 var {{ name.Plural }}FunctionParametersScenario = artifacts.require('{{ name.Plural }}FunctionParametersScenario');
 var {{ name.Plural }}SingleStructScenario = artifacts.require('{{ name.Plural }}SingleStructScenario');
 var {{ name.Plural }}StructArrayScenario = artifacts.require('{{ name.Plural }}StructArrayScenario');
+var {{ name.Plural }}Mock = artifacts.require('{{ name.Plural }}Mock');
+var {{ name.Plural }}MockSingleStructScenario = artifacts.require('{{ name.Plural }}MockSingleStructScenario');
+var {{ name.Plural }}MockStructArrayScenario = artifacts.require('{{ name.Plural }}MockStructArrayScenario');
 
 module.exports = function(deployer, network) {
     return deployer.then(async () => {
@@ -15,5 +18,8 @@ module.exports = function(deployer, network) {
         await deployer.deploy({{ name.Plural }}FunctionParametersScenario);
         await deployer.deploy({{ name.Plural }}SingleStructScenario);
         await deployer.deploy({{ name.Plural }}StructArrayScenario);
+        await deployer.deploy({{ name.Plural }}Mock);
+        await deployer.deploy({{ name.Plural }}MockSingleStructScenario);
+        await deployer.deploy({{ name.Plural }}MockStructArrayScenario);
     });
 };
