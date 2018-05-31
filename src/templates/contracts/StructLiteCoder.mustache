@@ -24,11 +24,11 @@ pragma solidity 0.4.24;
     {{#unless @first}}
 
     {{/unless}}
-    function decode{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}(bytes32{{#if ../slotsArray}}[{{ ../slotsLength }}]{{/if}} _{{ ../name.lowerCamelCase }}) public pure returns({{ type }}) {
-    {{#if isBool}}
-        return (uint256(_{{ ../name.lowerCamelCase }}{{#if ../slotsArray}}[{{ slot }}]{{/if}}) & {{ ../name.CONSTANT }}_{{ name.CONSTANT }}_MASK) != 0x0;
+    function decode{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}(uint256{{#if ../slotsArray}}[{{ ../slotsLength }}]{{/if}} _{{ ../name.lowerCamelCase }}) public pure returns({{ type }}) {
+        {{#if isBool}}
+        return (_{{ ../name.lowerCamelCase }}{{#if ../slotsArray}}[{{ slot }}]{{/if}} & {{ ../name.CONSTANT }}_{{ name.CONSTANT }}_MASK) != 0x0;
         {{else}}
-        return {{type}}((uint256(_{{ ../name.lowerCamelCase }}{{#if ../slotsArray}}[{{ slot }}]{{/if}}) & {{ ../name.CONSTANT }}_{{ name.CONSTANT }}_MASK){{#unless isFirst}} / {{ ../name.CONSTANT }}_{{ name.CONSTANT }}_OFFSET{{/unless}});
+        return {{type}}((_{{ ../name.lowerCamelCase }}{{#if ../slotsArray}}[{{ slot }}]{{/if}} & {{ ../name.CONSTANT }}_{{ name.CONSTANT }}_MASK){{#unless isFirst}} / {{ ../name.CONSTANT }}_{{ name.CONSTANT }}_OFFSET{{/unless}});
         {{/if}}
     }
     {{/each}}
@@ -40,20 +40,18 @@ pragma solidity 0.4.24;
     {{#unless @first}}
 
     {{/unless}}
-    function encode{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}(bytes32{{#if ../slotsArray}}[{{ ../slotsLength }}]{{/if}} _{{ ../name.lowerCamelCase }}, {{ type }} _{{ name.lowerCamelCase }}) public pure returns(bytes32{{#if ../slotsArray}}[{{ ../slotsLength }}]{{/if}}) {
+    function encode{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}(uint256{{#if ../slotsArray}}[{{ ../slotsLength }}]{{/if}} _{{ ../name.lowerCamelCase }}, {{ type }} _{{ name.lowerCamelCase }}) public pure returns(uint256{{#if ../slotsArray}}[{{ ../slotsLength }}]{{/if}}) {
         {{#if isBool}}
         if (_{{ name.lowerCamelCase }}) {
-            _{{ ../name.lowerCamelCase }}{{#if ../slotsArray}}[{{ slot }}]{{/if}} = bytes32(
-                (uint256(_{{ ../name.lowerCamelCase }}{{#if ../slotsArray}}[{{ slot }}]{{/if}}) & {{ ../name.CONSTANT }}_{{ name.CONSTANT }}_NEGATIVE_MASK) | {{ ../name.CONSTANT }}_{{ name.CONSTANT }}_MASK
-            );
+            _{{ ../name.lowerCamelCase }}{{#if ../slotsArray}}[{{ slot }}]{{/if}} = {{ ../name.CONSTANT }}_{{ name.CONSTANT }}_MASK |
+                (uint256(_{{ ../name.lowerCamelCase }}{{#if ../slotsArray}}[{{ slot }}]{{/if}}) & {{ ../name.CONSTANT }}_{{ name.CONSTANT }}_NEGATIVE_MASK);
         } else {
-            _{{ ../name.lowerCamelCase }}{{#if ../slotsArray}}[{{ slot }}]{{/if}} = bytes32(uint256(_{{ ../name.lowerCamelCase }}{{#if ../slotsArray}}[{{ slot }}]{{/if}}) & {{ ../name.CONSTANT }}_{{ name.CONSTANT }}_NEGATIVE_MASK);
+            _{{ ../name.lowerCamelCase }}{{#if ../slotsArray}}[{{ slot }}]{{/if}} = uint256(_{{ ../name.lowerCamelCase }}{{#if ../slotsArray}}[{{ slot }}]{{/if}}) & {{ ../name.CONSTANT }}_{{ name.CONSTANT }}_NEGATIVE_MASK;
         }
         {{else}}
-        _{{ ../name.lowerCamelCase }}{{#if ../slotsArray}}[{{ slot }}]{{/if}} = bytes32(
+        _{{ ../name.lowerCamelCase }}{{#if ../slotsArray}}[{{ slot }}]{{/if}} =
             (uint256(_{{ ../name.lowerCamelCase }}{{#if ../slotsArray}}[{{ slot }}]{{/if}}) & {{ ../name.CONSTANT }}_{{ name.CONSTANT }}_NEGATIVE_MASK) |
-            ((uint256(_{{ name.lowerCamelCase }}){{#unless isFirst}} * {{ ../name.CONSTANT }}_{{ name.CONSTANT }}_OFFSET{{/unless}}) & {{ ../name.CONSTANT }}_{{ name.CONSTANT }}_MASK)
-        );
+            ((uint256(_{{ name.lowerCamelCase }}){{#unless isFirst}} * {{ ../name.CONSTANT }}_{{ name.CONSTANT }}_OFFSET{{/unless}}) & {{ ../name.CONSTANT }}_{{ name.CONSTANT }}_MASK);
         {{/if}}
         return _{{ ../name.lowerCamelCase }};
     }
@@ -63,7 +61,7 @@ pragma solidity 0.4.24;
         {{#each variables}}
         {{ type }} _{{ name.lowerCamelCase }}{{#unless @last}},{{/unless}}
         {{/each}}
-    ) public pure returns(bytes32{{#if slotsArray}}[{{ slotsLength }}]{{/if}} _{{ name.lowerCamelCase }}) {
+    ) public pure returns(uint256{{#if slotsArray}}[{{ slotsLength }}]{{/if}} _{{ name.lowerCamelCase }}) {
         {{#each slots}}
         _{{ ../name.lowerCamelCase }}{{#if ../slotsArray}}[{{ @index }}]{{/if}} = encode{{ ../name.UpperCamelCase }}DataSlot{{ @index }}(
             {{#each this}}
@@ -81,7 +79,7 @@ pragma solidity 0.4.24;
         {{#each this}}
         {{ type }} _{{ name.lowerCamelCase }}{{#unless @last}},{{/unless}}
         {{/each}}
-    ) internal pure returns(bytes32) {
+    ) internal pure returns(uint256) {
         {{#each this}}
         {{#if isBool}}
         uint256 standard{{ name.UpperCamelCase }} = (_{{ name.lowerCamelCase }} ? {{ ../../name.CONSTANT }}_{{ name.CONSTANT }}_MASK : {{ ../../name.CONSTANT }}_{{ name.CONSTANT }}_NEGATIVE_MASK);
@@ -89,7 +87,7 @@ pragma solidity 0.4.24;
         uint256 standard{{ name.UpperCamelCase }} = uint256(_{{ name.lowerCamelCase }});
         {{/if}}
         {{/each}}
-        return bytes32(
+        return (
             {{#each this}}
             ((standard{{ name.UpperCamelCase }}{{#unless isBool}}{{#unless isFirst}} * {{ ../../name.CONSTANT }}_{{ name.CONSTANT }}_OFFSET{{/unless}}{{/unless}}) & {{ ../../name.CONSTANT }}_{{ name.CONSTANT }}_MASK){{#unless @last}} |{{/unless}}
             {{/each}}

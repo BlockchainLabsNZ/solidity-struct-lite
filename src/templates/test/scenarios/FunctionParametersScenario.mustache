@@ -8,7 +8,7 @@ contract {{ name.Plural }}FunctionParametersScenario is {{ name.Plural }}CoderCo
     {{ type }}[] private unknownLenght{{ name.UpperCamelCase }};
     {{/each}}
 
-    function singleStruct(bytes32{{#if slotsArray}}[{{ slotsLength }}]{{/if}} _{{ name.lowerCamelCase }}Data) public pure returns(
+    function singleStruct(uint256{{#if slotsArray}}[{{ slotsLength }}]{{/if}} _{{ name.lowerCamelCase }}Data) public pure returns(
         {{#each variables}}
         {{ type }}{{#unless @last}},{{/unless}}
         {{/each}}
@@ -23,7 +23,7 @@ contract {{ name.Plural }}FunctionParametersScenario is {{ name.Plural }}CoderCo
         );
     }
 
-    function knownLengthStructArray(bytes32{{#if slotsArray}}[{{ slotsLength }}]{{/if}}[10] _{{ name.lowerCamelCase }}Data) public pure returns(
+    function knownLengthStructArray(uint256{{#if slotsArray}}[{{ slotsLength }}]{{/if}}[10] _{{ name.lowerCamelCase }}Data) public pure returns(
         {{#each variables}}
         {{ type }}{{#unless @last}},{{/unless}}
         {{/each}}
@@ -47,14 +47,14 @@ contract {{ name.Plural }}FunctionParametersScenario is {{ name.Plural }}CoderCo
 
     function unknownLengthStructArray(
         {{#each slots}}
-        bytes32[] _{{ ../name.lowerCamelCase }}DataSlot{{ @index }}{{#unless @last}},{{/unless}}
+        uint256[] _{{ ../name.lowerCamelCase }}DataSlot{{ @index }}{{#unless @last}},{{/unless}}
         {{/each}}
     ) public returns(
         {{#each variables}}
         {{ type }}{{#unless @last}},{{/unless}}
         {{/each}}
     ) {
-        bytes32{{#if slotsArray}}[{{ slotsLength }}] memory{{/if}} _{{ name.lowerCamelCase }};
+        uint256{{#if slotsArray}}[{{ slotsLength }}] memory{{/if}} _{{ name.lowerCamelCase }};
 
         {{#each variables}}
         unknownLenght{{ name.UpperCamelCase }}.length = _{{ ../name.lowerCamelCase }}DataSlot0.length;
