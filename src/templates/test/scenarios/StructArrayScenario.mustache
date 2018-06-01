@@ -14,7 +14,7 @@ contract {{ name.Plural }}StructArrayScenario {
         {{ type }} _{{ name.lowerCamelCase }}{{#unless @last}},{{/unless}}
         {{/each}}
     ) public {
-        if ({{ name.lowerCamelCase }}.length <= _index){
+        if ({{ name.lowerCamelCase }}.length <= _index) {
             {{ name.lowerCamelCase }}.length = _index + 1;
         }
         {{ name.lowerCamelCase }}[_index].set{{ name.UpperCamelCase }}(
@@ -25,11 +25,14 @@ contract {{ name.Plural }}StructArrayScenario {
     }
 
     {{#each variables}}
+    {{#unless @first}}
+
+    {{/unless}}
     function write{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}(
         uint256 _index,
         {{ type }} _{{ name.lowerCamelCase }}
     ) public {
-        if ({{ ../name.lowerCamelCase }}.length <= _index){
+        if ({{ ../name.lowerCamelCase }}.length <= _index) {
             {{ ../name.lowerCamelCase }}.length = _index + 1;
         }
         {{ ../name.lowerCamelCase }}[_index].set{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}(_{{ name.lowerCamelCase }});
@@ -45,6 +48,9 @@ contract {{ name.Plural }}StructArrayScenario {
     }
 
     {{#each variables}}
+    {{#unless @first}}
+
+    {{/unless}}
     function read{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}(uint256 _index) public view returns({{ type }}) {
         return {{ ../name.lowerCamelCase }}[_index].get{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}();
     }

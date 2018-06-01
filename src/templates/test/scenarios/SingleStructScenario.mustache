@@ -21,6 +21,9 @@ contract {{ name.Plural }}SingleStructScenario {
     }
 
     {{#each variables}}
+    {{#unless @first}}
+
+    {{/unless}}
     function write{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}(
         {{ type }} _{{ name.lowerCamelCase }}
     ) public {
@@ -37,6 +40,9 @@ contract {{ name.Plural }}SingleStructScenario {
     }
 
     {{#each variables}}
+    {{#unless @first}}
+
+    {{/unless}}
     function read{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}() public view returns({{ type }}) {
         return {{ ../name.lowerCamelCase }}.get{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}();
     }
