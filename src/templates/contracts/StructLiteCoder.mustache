@@ -25,7 +25,7 @@ pragma solidity 0.4.24;
     {{/unless}}
     function decode{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}(uint256{{#if ../slotsArray}}[{{ ../slotsLength }}]{{/if}} _{{ ../name.lowerCamelCase }}) public pure returns({{ type }}) {
         {{#if isBool}}
-        return (_{{ ../name.lowerCamelCase }}{{#if ../slotsArray}}[{{ slot }}]{{/if}} & {{ ../name.CONSTANT }}_{{ name.CONSTANT }}_OFFSET) != 0x0;
+        return (_{{ ../name.lowerCamelCase }}{{#if ../slotsArray}}[{{ slot }}]{{/if}} & {{#if isFirst}}0x1{{else}}{{ ../name.CONSTANT }}_{{ name.CONSTANT }}_OFFSET{{/if}}) != 0x0;
         {{else}}
         return {{type}}(_{{ ../name.lowerCamelCase }}{{#if ../slotsArray}}[{{ slot }}]{{/if}}{{#unless isFirst}} / {{ ../name.CONSTANT }}_{{ name.CONSTANT }}_OFFSET{{/unless}});
         {{/if}}
@@ -42,7 +42,7 @@ pragma solidity 0.4.24;
     function encode{{ ../name.UpperCamelCase }}{{ name.UpperCamelCase }}(uint256{{#if ../slotsArray}}[{{ ../slotsLength }}]{{/if}} _{{ ../name.lowerCamelCase }}, {{ type }} _{{ name.lowerCamelCase }}) public pure returns(uint256{{#if ../slotsArray}}[{{ ../slotsLength }}]{{/if}}) {
         {{#if isBool}}
         if (_{{ name.lowerCamelCase }}) {
-            _{{ ../name.lowerCamelCase }}{{#if ../slotsArray}}[{{ slot }}]{{/if}} = {{ ../name.CONSTANT }}_{{ name.CONSTANT }}_OFFSET |
+            _{{ ../name.lowerCamelCase }}{{#if ../slotsArray}}[{{ slot }}]{{/if}} = {{#if isFirst}}0x1{{else}}{{ ../name.CONSTANT }}_{{ name.CONSTANT }}_OFFSET{{/if}} |
                 (uint256(_{{ ../name.lowerCamelCase }}{{#if ../slotsArray}}[{{ slot }}]{{/if}}) & {{ ../name.CONSTANT }}_{{ name.CONSTANT }}_NEGATIVE_MASK);
         } else {
             _{{ ../name.lowerCamelCase }}{{#if ../slotsArray}}[{{ slot }}]{{/if}} = uint256(_{{ ../name.lowerCamelCase }}{{#if ../slotsArray}}[{{ slot }}]{{/if}}) & {{ ../name.CONSTANT }}_{{ name.CONSTANT }}_NEGATIVE_MASK;
@@ -81,7 +81,7 @@ pragma solidity 0.4.24;
     ) internal pure returns(uint256) {
         {{#each this}}
         {{#if isBool}}
-        uint256 standard{{ name.UpperCamelCase }} = (_{{ name.lowerCamelCase }} ? {{ ../../name.CONSTANT }}_{{ name.CONSTANT }}_OFFSET : 0x0);
+        uint256 standard{{ name.UpperCamelCase }} = (_{{ name.lowerCamelCase }} ? {{#if isFirst}}0x1{{else}}{{ ../../name.CONSTANT }}_{{ name.CONSTANT }}_OFFSET{{/if}} : 0x0);
         {{else}}
         uint256 standard{{ name.UpperCamelCase }} = uint256(_{{ name.lowerCamelCase }});
         {{/if}}
