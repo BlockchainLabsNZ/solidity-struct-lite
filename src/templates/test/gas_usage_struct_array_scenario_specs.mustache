@@ -25,7 +25,7 @@ contract('{{ name.Plural }}StructArrayScenario', () => {
       {{/each}}
     );
     console.log(
-      "{{ name.UpperCamelCase }} Writing Full Struct in a new index",
+      "{{ name.UpperCamelCase }} Reading Full Struct in a new index",
       await {{ name.plural }}StructArrayScenario.read{{ name.UpperCamelCase }}.estimateGas(0)
     );
   });
